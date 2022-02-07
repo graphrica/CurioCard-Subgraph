@@ -2,7 +2,7 @@ specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
+  - kind: ethereum/contract
     name: CardFactory
     network: mainnet
     source:
@@ -27,7 +27,7 @@ dataSources:
         - function: CreateCard(uint256,string,string,string,string)
           handler: handleCreateCard
       file: ./src/mapping.ts
-  - kind: ethereum
+  - kind: ethereum/contract
     name: ERC1155
     network: mainnet
     source:
@@ -47,14 +47,27 @@ dataSources:
         - name: ERC1155
           file: ./abis/ERC1155.json
       eventHandlers:
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: URI(string,indexed uint256)
-          handler: handleURI
       file: ./src/mapping.ts
+templates:
+  - kind: ethereum/contract
+    name: ERC20
+    network: mainnet
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/erc20-mapping.ts

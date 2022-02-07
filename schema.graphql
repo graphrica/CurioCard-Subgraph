@@ -1,6 +1,16 @@
-type ExampleEntity @entity {
+type CardType @entity {
   id: ID!
-  count: BigInt!
+  name: String! 
+  supply: BigInt! 
+  ipfsHash: String! 
+  symbol: String!
+  description: String!
+  wrapped: Bytes
+}
+
+type Card @entity {
+  id: ID!
+  type: CardType!
   owner: Bytes! # address
-  spender: Bytes! # address
+  isWrapped: Boolean!
 }

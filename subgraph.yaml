@@ -23,6 +23,9 @@ dataSources:
           handler: handleApproval
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+      callHandlers: 
+        - function: CreateCard(uint256,string,string,string,string)
+          handler: handleCreateCard
       file: ./src/mapping.ts
   - kind: ethereum
     name: ERC1155

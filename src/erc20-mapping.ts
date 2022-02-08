@@ -19,7 +19,7 @@ export function handleTransfer(event: Transfer): void {
        */ 
 
       // try to load recipient CardBalance. if null, create a new recipient
-
+      let cardType = CardType.load(event.address.toHex())
       let newBalanceId_recipient =
         event.params.to.toHex() + "-" + event.address.toString();
       let newBalance_recipient = CardBalance.load(newBalanceId_recipient);
@@ -30,6 +30,7 @@ export function handleTransfer(event: Transfer): void {
         newBalance_recipient.save();
       } else {
         newBalance_recipient.balance = newBalance_recipient.balance.plus(event.params.value);
+        newBalance_recipient.type = cardType.id;
         newBalance_recipient.save();
       }
 
@@ -92,6 +93,7 @@ export function handleTransfer(event: Transfer): void {
         throw "should never happen";
       } else {
         newBalance_sender.balance = newBalance_sender.balance.minus(event.params.value);
+        newBalance_recipient.type = cardType.id;
         newBalance_sender.save();
       }
 

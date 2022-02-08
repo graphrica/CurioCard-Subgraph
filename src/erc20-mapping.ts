@@ -118,7 +118,7 @@ export function handleTransfer(event: Transfer): void {
       }
       let newBalance_sender = CardBalance.load(newBalanceId_sender.toString());
       if (newBalance_sender == null) {
-        throw "should never happen";
+        log.warning("SHOULD NOT HAPPEN", [])
       } else {
         newBalance_sender.balance = newBalance_sender.balance.minus(
           event.params.value
@@ -138,31 +138,35 @@ export function handleTransfer(event: Transfer): void {
         cardHolder_sender = CardHolder.load(event.params.from.toHex());
       }
       if (cardHolder_sender == null) {
-        throw "should never happen";
+        log.warning("SHOULD NOT HAPPEN", [])
       } else {
         // if balance not in cardHolder_sender, add it
-        if (cardHolder_sender.holdings.indexOf(newBalance_sender.id) == -1) {
-          let newHoldings = cardHolder_sender.holdings;
-          newHoldings.push(newBalance_sender.id);
-          cardHolder_sender.holdings = newHoldings;
+        if(newBalance_sender != null){
+            if (cardHolder_sender.holdings.indexOf(newBalance_sender.id) == -1) {
+                let newHoldings = cardHolder_sender.holdings;
+                newHoldings.push(newBalance_sender.id);
+                cardHolder_sender.holdings = newHoldings;
+              }
         }
       }
-
-      // calculate unique cards held
-      uniqueCards = 0;
-      for (let i = 0; i < cardHolder_sender.holdings.length; i++) {
-        // load holdings; determine if balance is > 0
-        let holdings = cardHolder_sender.holdings;
-        let entry = CardBalance.load(holdings[i]);
-        if (entry != null) {
-          if (entry.balance != BigInt.fromI32(0)) {
-            uniqueCards++;
+      if(cardHolder_sender != null){
+        uniqueCards = 0;
+        for (let i = 0; i < cardHolder_sender.holdings.length; i++) {
+          // load holdings; determine if balance is > 0
+          let holdings = cardHolder_sender.holdings;
+          let entry = CardBalance.load(holdings[i]);
+          if (entry != null) {
+            if (entry.balance != BigInt.fromI32(0)) {
+              uniqueCards++;
+            }
           }
         }
+  
+        cardHolder_sender.uniqueCards = uniqueCards;
+        cardHolder_sender.save();
       }
-
-      cardHolder_sender.uniqueCards = uniqueCards;
-      cardHolder_sender.save();
+      // calculate unique cards held
+     
     }
   }
 }

@@ -1,7 +1,7 @@
 type CardType @entity {
   id: ID!
   name: String 
-  supply: BigInt! 
+  supply: BigInt
   ipfsHash: String 
   symbol: String
   description: String

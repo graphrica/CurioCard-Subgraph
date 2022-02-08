@@ -6,20 +6,28 @@ export const OPERATOR_ADDRESS = "0x37aab22019448859fc255e6e353a1baf2c05e6bb";
 
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHex() == ADDRESS_ZERO) {
+      //MINT
+      log.info("MINT EVENT", []);
   } else {
-    let cardType = CardType.load(event.address.toHex());
-    if (cardType == null) {
-      log.warning("CARD DOES NOT EXIST", [event.address.toHex()]);
-    }
-    // MINT
+   
+  
     if (event.params.to.toHex() == ADDRESS_ZERO) {
+        //BURN
+        log.info("BURN EVENT", []);
     } else {
       /*
        *  Increment balance of recipient
        */ 
-
+      log.info("TRANSFER EVENT", []);
       // try to load recipient CardBalance. if null, create a new recipient
-      let cardType = CardType.load(event.address.toHex())
+      let cardType = CardType.load(event.address.toHex());
+      if (cardType == null) {
+        log.warning("CARD DOES NOT EXIST", [event.address.toHex()]);
+  
+        cardType = new CardType(event.address.toHex())
+        cardType.version = "ERC20";
+        cardType.save();
+      }
       let newBalanceId_recipient =
         event.params.to.toHex() + "-" + event.address.toString();
       let newBalance_recipient = CardBalance.load(newBalanceId_recipient);
@@ -56,9 +64,12 @@ export function handleTransfer(event: Transfer): void {
         // load holdings; determine if balance is > 0
         let holdings = cardHolder_recipient.holdings;
         let entry = CardBalance.load(holdings[i]);
-        if (entry.balance != BigInt.fromI32(0)) {
-          uniqueCards++;
+        if(entry != null) {
+            if (entry.balance != BigInt.fromI32(0)) {
+                uniqueCards++;
+              }
         }
+       
       }
 
       cardHolder_recipient.uniqueCards = uniqueCards;
@@ -122,9 +133,12 @@ export function handleTransfer(event: Transfer): void {
         // load holdings; determine if balance is > 0
         let holdings = cardHolder_sender.holdings;
         let entry = CardBalance.load(holdings[i]);
-        if (entry.balance != BigInt.fromI32(0)) {
-          uniqueCards++;
+        if(entry != null) {
+            if (entry.balance != BigInt.fromI32(0)) {
+                uniqueCards++;
+              }
         }
+        
       }
 
       cardHolder_sender.uniqueCards = uniqueCards;

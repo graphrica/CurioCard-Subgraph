@@ -51,6 +51,9 @@ dataSources:
           handler: handleTransferSingle
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
           handler: handleTransferBatch
+      callHandlers: 
+        - function: create(uint256,address,string)
+          handler: handleCreateCardERC1155
       file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract

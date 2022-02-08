@@ -1,11 +1,12 @@
 type CardType @entity {
   id: ID!
   name: String 
+  address: Bytes
   supply: BigInt
   ipfsHash: String 
   symbol: String
   description: String
-  wrapped: Bytes
+  wrapped: BigInt!
   version: CardVersion!
 }
 

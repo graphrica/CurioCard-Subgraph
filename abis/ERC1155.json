@@ -199,6 +199,19 @@
   },
   {
     "constant": false,
+    "inputs": [
+      { "name": "_id", "type": "uint256" },
+      { "name": "_contract", "type": "address" },
+      { "name": "memory_uri", "type": "string" }
+    ],
+    "name": "create",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
     "inputs": [{ "name": "newOwner", "type": "address" }],
     "name": "transferOwnership",
     "outputs": [],

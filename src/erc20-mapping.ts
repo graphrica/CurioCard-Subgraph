@@ -2,29 +2,49 @@ import { BigInt, log } from "@graphprotocol/graph-ts";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
-export const OPERATOR_ADDRESS = "0x37aab22019448859fc255e6e353a1baf2c05e6bb";
+export const ERC1155_ADDRESS = "0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313";
 
 export function handleTransfer(event: Transfer): void {
+  // IF SENT TO ERC1155 ADDRESS  -  WRAPPING
+
+  if (event.params.to.toHex() == ERC1155_ADDRESS) {
+    log.info("WRAPPING EVENT", []);
+    let cardType = CardType.load(event.address.toHex());
+      if (cardType == null) {
+        log.warning("CARD DOES NOT EXIST", [event.address.toHex()]);
+
+        cardType = new CardType(event.address.toHex());
+        cardType.version = "ERC20";
+        cardType.wrapped = BigInt.fromI32(0);
+        cardType.save();
+      }
+      else {
+        cardType.wrapped = cardType.wrapped.plus(event.params.value);
+        cardType.save();
+      }
+     
+     
+  }
+
+  // IF SENT FROM ERC1155 ADDRESS - UNWRAPPING
+
   if (event.params.from.toHex() == ADDRESS_ZERO) {
-      //MINT
-      log.info("MINT EVENT", []);
+    //MINT
+    log.info("MINT EVENT", []);
   } else {
-   
-  
     if (event.params.to.toHex() == ADDRESS_ZERO) {
-        //BURN
-        log.info("BURN EVENT", []);
+      //BURN
+      log.info("BURN EVENT", []);
     } else {
       /*
        *  Increment balance of recipient
-       */ 
-      log.info("TRANSFER EVENT", []);
+       */ log.info("TRANSFER EVENT", []);
       // try to load recipient CardBalance. if null, create a new recipient
       let cardType = CardType.load(event.address.toHex());
       if (cardType == null) {
         log.warning("CARD DOES NOT EXIST", [event.address.toHex()]);
-  
-        cardType = new CardType(event.address.toHex())
+
+        cardType = new CardType(event.address.toHex());
         cardType.version = "ERC20";
         cardType.save();
       }
@@ -37,7 +57,9 @@ export function handleTransfer(event: Transfer): void {
         newBalance_recipient.balance = event.params.value;
         newBalance_recipient.save();
       } else {
-        newBalance_recipient.balance = newBalance_recipient.balance.plus(event.params.value);
+        newBalance_recipient.balance = newBalance_recipient.balance.plus(
+          event.params.value
+        );
         newBalance_recipient.type = cardType.id;
         newBalance_recipient.save();
       }
@@ -64,12 +86,11 @@ export function handleTransfer(event: Transfer): void {
         // load holdings; determine if balance is > 0
         let holdings = cardHolder_recipient.holdings;
         let entry = CardBalance.load(holdings[i]);
-        if(entry != null) {
-            if (entry.balance != BigInt.fromI32(0)) {
-                uniqueCards++;
-              }
+        if (entry != null) {
+          if (entry.balance != BigInt.fromI32(0)) {
+            uniqueCards++;
+          }
         }
-       
       }
 
       cardHolder_recipient.uniqueCards = uniqueCards;
@@ -80,21 +101,14 @@ export function handleTransfer(event: Transfer): void {
        */
 
       let unwrap = false; // special handling for unwrap
-      if (
-        event.params.from.toHex() ==
-        event.address.toHex()
-      ) {
+      if (event.params.from.toHex() == ERC1155_ADDRESS) {
         unwrap = true;
       }
 
       // load CardBalance
       let newBalanceId_sender: String;
       if (unwrap) {
-        // use operator
-        // newBalanceId_sender =
-        //   event.params.operator.toHex() + "-" + event.params._id.toString();
-        newBalanceId_sender =
-        OPERATOR_ADDRESS + "-" + event.address.toHex();
+        newBalanceId_sender = ERC1155_ADDRESS + "-" + event.address.toString();
       } else {
         newBalanceId_sender =
           event.params.from.toHex() + "-" + event.address.toHex();
@@ -103,16 +117,23 @@ export function handleTransfer(event: Transfer): void {
       if (newBalance_sender == null) {
         throw "should never happen";
       } else {
-        newBalance_sender.balance = newBalance_sender.balance.minus(event.params.value);
+        newBalance_sender.balance = newBalance_sender.balance.minus(
+          event.params.value
+        );
         newBalance_recipient.type = cardType.id;
         newBalance_sender.save();
-      }
+        if(cardType != null) {
+            cardType.wrapped = cardType.wrapped.minus(event.params.value);
+            cardType.save();
+        }
+        
+          }
 
       // load sender CardHolder
       let cardHolder_sender: CardHolder | null;
       if (unwrap) {
         // use operator
-        cardHolder_sender = CardHolder.load(OPERATOR_ADDRESS);
+        cardHolder_sender = CardHolder.load(ERC1155_ADDRESS);
       } else {
         cardHolder_sender = CardHolder.load(event.params.from.toHex());
       }
@@ -133,12 +154,11 @@ export function handleTransfer(event: Transfer): void {
         // load holdings; determine if balance is > 0
         let holdings = cardHolder_sender.holdings;
         let entry = CardBalance.load(holdings[i]);
-        if(entry != null) {
-            if (entry.balance != BigInt.fromI32(0)) {
-                uniqueCards++;
-              }
+        if (entry != null) {
+          if (entry.balance != BigInt.fromI32(0)) {
+            uniqueCards++;
+          }
         }
-        
       }
 
       cardHolder_sender.uniqueCards = uniqueCards;

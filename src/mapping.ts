@@ -17,6 +17,7 @@ export function handleCreateCard(call: CreateCardCall): void {
   cardType.description = call.inputs._desc;
   cardType.name = call.inputs._name;
   cardType.ipfsHash = call.inputs._ipfshash;
+  cardType.version = "ERC20";
   cardType.save();
 
   ERC20.create(call.outputs.value0)

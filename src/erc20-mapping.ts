@@ -2,6 +2,7 @@ import { BigInt, log } from "@graphprotocol/graph-ts";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
+export const OPERATOR_ADDRESS = "0x37aab22019448859fc255e6e353a1baf2c05e6bb";
 
 export function handleTransfer(event: Transfer): void {
   if (event.params.from.toHex() == ADDRESS_ZERO) {
@@ -15,7 +16,7 @@ export function handleTransfer(event: Transfer): void {
     } else {
       /*
        *  Increment balance of recipient
-       */
+       */ 
 
       // try to load recipient CardBalance. if null, create a new recipient
 
@@ -78,17 +79,19 @@ export function handleTransfer(event: Transfer): void {
       let newBalanceId_sender: String;
       if (unwrap) {
         // use operator
+        // newBalanceId_sender =
+        //   event.params.operator.toHex() + "-" + event.params._id.toString();
         newBalanceId_sender =
-          event.params.operator.toHex() + "-" + event.params._id.toString();
+        OPERATOR_ADDRESS + "-" + event.address.toHex();
       } else {
         newBalanceId_sender =
-          event.params._from.toHex() + "-" + event.params._id.toString();
+          event.params.from.toHex() + "-" + event.address.toHex();
       }
-      let newBalance_sender = CardBalance.load(newBalanceId_sender);
+      let newBalance_sender = CardBalance.load(newBalanceId_sender.toString());
       if (newBalance_sender == null) {
         throw "should never happen";
       } else {
-        newBalance_sender.balance -= event.params._value;
+        newBalance_sender.balance = newBalance_sender.balance.minus(event.params.value);
         newBalance_sender.save();
       }
 
@@ -96,9 +99,9 @@ export function handleTransfer(event: Transfer): void {
       let cardHolder_sender: CardHolder | null;
       if (unwrap) {
         // use operator
-        cardHolder_sender = CardHolder.load(event.params._operator.toHex());
+        cardHolder_sender = CardHolder.load(OPERATOR_ADDRESS);
       } else {
-        cardHolder_sender = CardHolder.load(event.params._from.toHex());
+        cardHolder_sender = CardHolder.load(event.params.from.toHex());
       }
       if (cardHolder_sender == null) {
         throw "should never happen";

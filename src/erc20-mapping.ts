@@ -16,6 +16,7 @@ export function handleTransfer(event: Transfer): void {
         cardType = new CardType(event.address.toHex());
         cardType.version = "ERC20";
         cardType.wrapped = BigInt.fromI32(0);
+        cardType.unwrapped = cardType.unwrapped.minus(event.params.value);
         cardType.save();
       }
       else {
@@ -108,8 +109,10 @@ export function handleTransfer(event: Transfer): void {
       // load CardBalance
       let newBalanceId_sender: String;
       if (unwrap) {
+       
         newBalanceId_sender = ERC1155_ADDRESS + "-" + event.address.toString();
       } else {
+        
         newBalanceId_sender =
           event.params.from.toHex() + "-" + event.address.toHex();
       }
@@ -122,10 +125,7 @@ export function handleTransfer(event: Transfer): void {
         );
         newBalance_recipient.type = cardType.id;
         newBalance_sender.save();
-        if(cardType != null) {
-            cardType.wrapped = cardType.wrapped.minus(event.params.value);
-            cardType.save();
-        }
+       
         
           }
 

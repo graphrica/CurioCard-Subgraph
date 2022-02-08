@@ -7,6 +7,7 @@ dataSources:
     network: mainnet
     source:
       address: "0x37aab22019448859fc255e6e353a1baf2c05e6bb"
+      startBlock: 3678409
       abi: CardFactory
     mapping:
       kind: ethereum/events

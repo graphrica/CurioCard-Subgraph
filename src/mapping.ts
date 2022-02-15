@@ -78,3 +78,4 @@ export function getCardTypeFromID(id: BigInt, address : Address): CardType {
   if (cardType != null) return cardType;
   else throw "CardType does not exist";
 }
+

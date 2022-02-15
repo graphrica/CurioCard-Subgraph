@@ -19,11 +19,6 @@ dataSources:
       abis:
         - name: CardFactory
           file: ./abis/CardFactory.json
-      eventHandlers:
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: handleApproval
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
       callHandlers: 
         - function: CreateCard(uint256,string,string,string,string)
           handler: handleCreateCard
@@ -51,11 +46,6 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
-        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatch
-      callHandlers: 
-        - function: create(uint256,address,string)
-          handler: handleCreateCardERC1155
       file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract

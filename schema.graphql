@@ -6,16 +6,14 @@ type CardType @entity {
   ipfsHash: String 
   symbol: String
   description: String
-  wrapped: BigInt!
-  unwrapped: BigInt!
-  version: CardVersion!
 }
 
 
 type CardBalance @entity {
     id: ID!
     type: CardType
-    balance: BigInt!
+    wrappedBalance: BigInt!
+    unwrappedBalance: BigInt! 
 }
 
 type CardHolder @entity {
@@ -23,11 +21,4 @@ type CardHolder @entity {
   id: ID!
   "Holdings is a map between Card ID (1...30) and Balance (number of cards)."
   holdings: [CardBalance!]!
-  "UniqueCards represents the number of different card types held. Holding CRO1, CRO4, and CRO9 means uniqueCards=3."
-  uniqueCards: Int!
-}
-
-enum CardVersion {
-  ERC20
-  ERC1155
 }

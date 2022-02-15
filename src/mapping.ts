@@ -40,6 +40,8 @@ export function handleTransferSingle(event: TransferSingle): void {
       // INCREASE SENDER UNWRAPPED BALANCE
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.plus(event.params._value);
       user_sender_cardBalance.save();
+      user_sender.holdings.push(user_sender_cardBalance.id);
+      user_sender.save()
     } else if (event.params._from.toHex() == ADDRESS_ZERO) {
       // WRAP EVENT
       // IGNORE AS IT IS HANDLED IN THE OTHER MAPPING 
@@ -56,9 +58,13 @@ export function handleTransferSingle(event: TransferSingle): void {
        // DECREASE SENDER BALANCE WRAPPED AND save
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(event.params._value);
       user_sender_cardBalance.save()
+      user_sender.holdings.push(user_sender_cardBalance.id);
+      user_sender.save();
       // INCREASE RECEIVER BALANCE WRAPPED AND save
       user_recevier_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(event.params._value);
       user_recevier_cardBalance.save();
+      user_recevier.holdings.push(user_recevier_cardBalance.id);
+      user_recevier.save()
     }
   } else {
     throw "CardType does not exist";

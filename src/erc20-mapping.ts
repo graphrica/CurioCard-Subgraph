@@ -21,6 +21,8 @@ export function handleTransfer(event: Transfer): void {
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(event.params.value);
       user_sender_cardBalance.save();
+      user_sender.holdings.push(user_sender_cardBalance.id);
+      user_sender.save()
     }
     else if(event.address == event.params.from)
     {
@@ -33,6 +35,8 @@ export function handleTransfer(event: Transfer): void {
 
       user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
       user_recevier_cardBalance.save()
+      user_recevier.holdings.push(user_recevier_cardBalance.id)
+      user_recevier.save();
     }
     else { 
       // TRANSFER
@@ -47,9 +51,13 @@ export function handleTransfer(event: Transfer): void {
       // DECREASE SENDER BALANCE UNWRAPPED AND save
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
       user_sender_cardBalance.save()
+      user_sender.holdings.push(user_sender_cardBalance.id)
+      user_sender_cardBalance.save()
       // INCREASE RECEIVER BALANCE UNWRAPPED AND save
       user_recevier_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.plus(event.params.value);
       user_recevier_cardBalance.save();
+      user_recevier.holdings.push(user_recevier_cardBalance.id)
+      user_recevier.save()
 
     }
 

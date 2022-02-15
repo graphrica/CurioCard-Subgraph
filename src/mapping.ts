@@ -33,8 +33,9 @@ export function handleTransferSingle(event: TransferSingle): void {
     if (event.params._to.toHex() == ADDRESS_ZERO) {
       // UNWRAPPED
       // GET USER SENDER, USER SENDER Balance
-      let user_sender_cardBalance = getOrCreateCardBalance(event.params._from, cardType.address.toHex() , cardType);
-      let user_sender = getOrCreateCardHolder(event.params._from, user_sender_cardBalance);
+      let user_sender = getOrCreateCardHolder(event.params._from);
+      let user_sender_cardBalance = getOrCreateCardBalance(event.params._from, cardType.address.toHex() , cardType, user_sender);
+      
       // DECREASE SENDER WRAPPED BALANCE
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(event.params._value);
       // INCREASE SENDER UNWRAPPED BALANCE
@@ -49,19 +50,20 @@ export function handleTransferSingle(event: TransferSingle): void {
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
       // GET USER RECEIVER and USER RECEIVER CARD Balance
-      let user_sender_cardBalance = getOrCreateCardBalance(event.params._from, cardType.address.toHex(), cardType);
-      let user_sender = getOrCreateCardHolder(event.params._from, user_sender_cardBalance);
+      let user_sender = getOrCreateCardHolder(event.params._from);
+      let user_sender_cardBalance = getOrCreateCardBalance(event.params._from, cardType.address.toHex(), cardType, user_sender);
       
       // GET USER RECEIVER and USER RECEIVER CARD Balance
-      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType.address.toHex(), cardType);
-      let user_recevier = getOrCreateCardHolder(event.params._to, user_recevier_cardBalance);
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType.address.toHex(), cardType, user_recevier);
+      
        // DECREASE SENDER BALANCE WRAPPED AND save
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(event.params._value);
       user_sender_cardBalance.save()
       user_sender.holdings.push(user_sender_cardBalance.id);
       user_sender.save();
       // INCREASE RECEIVER BALANCE WRAPPED AND save
-      user_recevier_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(event.params._value);
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
       user_recevier_cardBalance.save();
       user_recevier.holdings.push(user_recevier_cardBalance.id);
       user_recevier.save()
@@ -78,4 +80,5 @@ export function getCardTypeFromID(id: BigInt, address : Address): CardType {
   if (cardType != null) return cardType;
   else throw "CardType does not exist";
 }
+
 

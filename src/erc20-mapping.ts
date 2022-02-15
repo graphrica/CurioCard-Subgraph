@@ -80,7 +80,7 @@ export function getOrCreateCardHolder(address: Address, cardBalance: CardBalance
 }
 
 export function getOrCreateCardBalance(address: Address, contract: string, cardType: CardType): CardBalance  {
-  let cardBalanceID = contract + address.toHex();
+  let cardBalanceID = contract + '-' + address.toHex();
   let cardBalance = CardBalance.load(cardBalanceID);
   if (cardBalance == null) {
     cardBalance = new CardBalance(cardBalanceID);

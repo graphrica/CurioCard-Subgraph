@@ -54,7 +54,7 @@ export function handleTransfer(event: Transfer): void {
       user_sender.holdings.push(user_sender_cardBalance.id)
       user_sender_cardBalance.save()
       // INCREASE RECEIVER BALANCE UNWRAPPED AND save
-      user_recevier_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.plus(event.params.value);
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
       user_recevier_cardBalance.save();
       user_recevier.holdings.push(user_recevier_cardBalance.id)
       user_recevier.save()
@@ -69,26 +69,26 @@ export function handleTransfer(event: Transfer): void {
 }
 
 
-export function getOrCreateCardHolder(address: Address, user_recevier_cardBalance: CardBalance): CardHolder  {
-  let user_recevier = CardHolder.load(address.toHex());
-  if (user_recevier == null) {
-    user_recevier = new CardHolder(address.toHex());
-    user_recevier.holdings.push(user_recevier_cardBalance.id);
-    user_recevier.save();
+export function getOrCreateCardHolder(address: Address, cardBalance: CardBalance): CardHolder  {
+  let user = CardHolder.load(address.toHex());
+  if (user == null) {
+    user = new CardHolder(address.toHex());
+    user.holdings.push(cardBalance.id);
+    user.save();
   }
-  return user_recevier;
+  return user;
 }
 
 export function getOrCreateCardBalance(address: Address, contract: string, cardType: CardType): CardBalance  {
   let cardBalanceID = contract + address.toHex();
-  let user_recevier_cardBalance = CardBalance.load(cardBalanceID);
-  if (user_recevier_cardBalance == null) {
-    user_recevier_cardBalance = new CardBalance(cardBalanceID);
-    user_recevier_cardBalance.type = cardType.id;
-    user_recevier_cardBalance.unwrappedBalance = BigInt.fromI32(0);
-    user_recevier_cardBalance.wrappedBalance = BigInt.fromI32(0);
-    user_recevier_cardBalance.save();
+  let cardBalance = CardBalance.load(cardBalanceID);
+  if (cardBalance == null) {
+    cardBalance = new CardBalance(cardBalanceID);
+    cardBalance.type = cardType.id;
+    cardBalance.unwrappedBalance = BigInt.fromI32(0);
+    cardBalance.wrappedBalance = BigInt.fromI32(0);
+    cardBalance.save();
   }
-  return user_recevier_cardBalance;
+  return cardBalance;
 }
 

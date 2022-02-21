@@ -21,5 +21,5 @@ type CardHolder @entity {
   "A TokenHolder is any address that holds any amount of Curio Cards. The ID is this address."
   id: ID!
   "Holdings is a map between Card ID (1...30) and Balance (number of cards)."
-  holdings: [CardBalance!]!
+  holdings: [CardBalance!] @derivedFrom(field: "user")
 }

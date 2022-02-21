@@ -56,24 +56,7 @@ export function handleCreateCard(call: CreateCardCall): void {
     cardType.address = call.outputs.value0;
     cardType.symbol = call.inputs._symbol;
     cardType.description = call.inputs._desc;
-    if(Address.fromString("0x4f1694be039e447b729ab11653304232ae143c69") == call.outputs.value0)
-    {
-      cardType.name = "Curio4";
-    }
-    else if(Address.fromString("0x5a3d4a8575a688b53e8b270b5c1f26fd63065219") == call.outputs.value0) {
-      cardType.name = "Curio5";
-    }
-    else if(Address.fromString("0x1ca6ac0ce771094f0f8a383d46bf3acc9a5bf27f") == call.outputs.value0) {
-      cardType.name = "Curio6";
-    }
-    else if(Address.fromString("0x1cb5bf4be53eb141b56f7e4bb36345a353b5488c") == call.outputs.value0) {
-      cardType.name = "Curio26";
-    }
-    else
-    {
-      cardType.name = call.inputs._name;
-    }
-    
+    cardType.name = call.inputs._name.replace("Card", "");
     cardType.ipfsHash = call.inputs._ipfshash;
     cardType.save();
 
@@ -83,7 +66,7 @@ export function handleCreateCard(call: CreateCardCall): void {
 // ERC1155 Events
 
 export function handleTransferSingle(event: TransferSingle): void {
-  //var cardType = CardType.load(event.params._operator.toHex());
+  
   var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
   if (cardType != null) {
     if (event.params._to == ADDRESS_ZERO) {
@@ -107,12 +90,6 @@ export function handleTransferSingle(event: TransferSingle): void {
         event.params._value
       );
       user_sender_cardBalance.save();
-      // if(user_sender.holdings == null){
-      //   user_sender.holdings = [user_sender_cardBalance.id]
-      // }
-      // else{
-      //   user_sender.holdings.push(user_sender_cardBalance.id)
-      // }
       user_sender.save();
     } else if (event.params._from == ADDRESS_ZERO) {
       // WRAP EVENT
@@ -144,27 +121,12 @@ export function handleTransferSingle(event: TransferSingle): void {
         event.params._value
       );
       user_sender_cardBalance.save();
-      // if(user_sender.holdings == null){
-      //   user_sender.holdings = [user_sender_cardBalance.id]
-      // }
-      // else{
-      //   user_sender.holdings.push(user_sender_cardBalance.id)
-      // }
       user_sender.save();
       // INCREASE RECEIVER BALANCE WRAPPED AND save
       user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
         event.params._value
       );
       user_recevier_cardBalance.save();
-      // if(user_recevier.holdings == null){
-      //   user_recevier.holdings = [user_recevier_cardBalance.id]
-      // }
-      // else{
-      //   var holdings = user_recevier.holdings == null ? [] : user_recevier.holdings;
-      //   holdings.push(user_recevier_cardBalance.id)
-
-      //   user_recevier.holdings = holdings;
-      // }
       user_recevier.save();
       log.info("ERC1155 TRANSFER", [event.transaction.hash.toHexString()])
     }

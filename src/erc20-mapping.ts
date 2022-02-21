@@ -17,13 +17,6 @@ export function handleTransfer(event: Transfer): void {
  
        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
        user_recevier_cardBalance.save()
-      //  if(user_recevier.holdings == null){
-      //    user_recevier.holdings = [user_recevier_cardBalance.id]
-      //  }
-      //  else{
-      //    user_recevier.holdings.push(user_recevier_cardBalance.id)
-      //  }
-       
        user_recevier.save();
        log.info("ERC20 MINT - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
@@ -37,12 +30,6 @@ export function handleTransfer(event: Transfer): void {
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(event.params.value);
       user_sender_cardBalance.save();
-      // if(user_sender.holdings == null){
-      //   user_sender.holdings = [user_sender_cardBalance.id]
-      // }
-      // else{
-      //   user_sender.holdings.push(user_sender_cardBalance.id)
-      // }
       user_sender.save()
       log.info("WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
@@ -69,23 +56,11 @@ export function handleTransfer(event: Transfer): void {
       // DECREASE SENDER BALANCE UNWRAPPED AND save
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
       user_sender_cardBalance.save()
-      // if(user_sender.holdings == null){
-      //   user_sender.holdings = [user_sender_cardBalance.id]
-      // }
-      // else{
-      //   user_sender.holdings.push(user_sender_cardBalance.id)
-      // }
       
       user_sender.save()
       // INCREASE RECEIVER BALANCE UNWRAPPED AND save
       user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
       user_recevier_cardBalance.save();
-      // if(user_recevier.holdings == null){
-      //   user_recevier.holdings = [user_recevier_cardBalance.id]
-      // }
-      // else{
-      //   user_recevier.holdings.push(user_recevier_cardBalance.id)
-      // }
       user_recevier.save()
       log.info("ERC20 TRANSFER - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }

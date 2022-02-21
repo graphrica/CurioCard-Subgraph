@@ -1,17 +1,14 @@
-import { Address, BigInt, log, TypedMap, Value } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { CreateCardCall } from "../generated/CardFactory/CardFactory";
-import { CardBalance, CardHolder, CardType } from "../generated/schema";
+import { CardType } from "../generated/schema";
 import {
   TransferSingle,
-  TransferBatch,
   ERC1155,
 } from "../generated/ERC1155/ERC1155";
 import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder } from "./erc20-mapping";
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
-
-
 
 // export const curioArray  = [
 //   { id: 1, displayName: "Curio1", address: "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c" },
@@ -46,30 +43,42 @@ export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db
 //   { id: 30, displayName: "Curio30", address: "0x7f5b230dc580d1e67df6ed30dee82684dd113d1f" },
 // ];
 
-// export function getCurioName(address: string) : string  {
-//   for (let i = 0; i < curioArray.length; i++) {
-//     if (curioArray[i].address == address) {
-//       return curioArray[i].displayName;
-//     }
-//   }
-//   return "";
-// }
 
 export function handleCreateCard(call: CreateCardCall): void {
   
-
+  if(Address.fromString("0x39786ae114cb7bca7ac103cb10aab4054c0b144e") == call.outputs.value0){
+    log.info("FAKE CURIO CARD MINTED - CURIO SNOW", [])
+  }
+  else { 
     let cardType = new CardType(call.outputs.value0.toHex());
 
     cardType.supply = call.inputs._initialAmount;
     cardType.address = call.outputs.value0;
     cardType.symbol = call.inputs._symbol;
     cardType.description = call.inputs._desc;
-    cardType.name = call.inputs._name;
+    if(Address.fromString("0x4f1694be039e447b729ab11653304232ae143c69") == call.outputs.value0)
+    {
+      cardType.name = "Curio4";
+    }
+    else if(Address.fromString("0x5a3d4a8575a688b53e8b270b5c1f26fd63065219") == call.outputs.value0) {
+      cardType.name = "Curio5";
+    }
+    else if(Address.fromString("0x1ca6ac0ce771094f0f8a383d46bf3acc9a5bf27f") == call.outputs.value0) {
+      cardType.name = "Curio6";
+    }
+    else if(Address.fromString("0x1cb5bf4be53eb141b56f7e4bb36345a353b5488c") == call.outputs.value0) {
+      cardType.name = "Curio26";
+    }
+    else
+    {
+      cardType.name = call.inputs._name;
+    }
+    
     cardType.ipfsHash = call.inputs._ipfshash;
     cardType.save();
 
     ERC20.create(call.outputs.value0);
-  
+  }
 }
 // ERC1155 Events
 
@@ -171,15 +180,3 @@ export function getCardTypeFromID(id: BigInt, address: Address): CardType {
   if (cardType != null) return cardType;
   else throw "CardType does not exist";
 }
-
-
-// export function getCardTypeFromID(id: BigInt): CardType {
-//   for (let i = 0; i < curioArray.length; i++) {
-//     var curioIdBigInt = BigInt.fromI32(curioArray[i].id)
-//     if (curioIdBigInt == id) {
-//       var cardType = CardType.load(curioArray[i].address);
-//       if (cardType != null) return cardType;
-//     }
-//   }
-//   throw "CardType does not exist";
-// }

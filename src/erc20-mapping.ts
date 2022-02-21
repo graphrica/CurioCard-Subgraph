@@ -1,6 +1,7 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
+
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
@@ -13,8 +14,6 @@ export function handleTransfer(event: Transfer): void {
        //ERC20 MINT
        let user_recevier = getOrCreateCardHolder(event.params.to);
        let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, event.address.toHexString(), cardType,user_recevier);
- 
-       
  
        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
        user_recevier_cardBalance.save()

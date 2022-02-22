@@ -68,7 +68,7 @@ export function handleTransfer(event: Transfer): void {
 }
 export function handleDirectTransfer(call: TransferCall): void {
   log.info("START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString()])
-  if (call.transaction.from == ERC1155_ADDRESS){
+  if (call.transaction.from == ERC1155_ADDRESS || call.transaction.from == ERC1155Unofficial_ADDRESS){
     log.info("IGNORE UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
   else {

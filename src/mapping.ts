@@ -73,9 +73,9 @@ export function handleTransferSingle(event: TransferSingle): void {
       // UNWRAPPED
       log.info("UNWRAP EVENT - ERC1155",[event.transaction.hash.toHexString()])
       // GET USER SENDER, USER SENDER Balance
-      let user_sender = getOrCreateCardHolder(event.params._from);
+      let user_sender = getOrCreateCardHolder(event.params._operator);
       let user_sender_cardBalance = getOrCreateCardBalance(
-        event.params._from,
+        event.params._operator,
         cardType.address.toHexString(),
         cardType,
         user_sender

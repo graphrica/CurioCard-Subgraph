@@ -47,6 +47,30 @@ dataSources:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ERC1155Unofficial
+    network: mainnet
+    source:
+      address: "0x3c2754c0CDc5499df1a50D608D8985070Bf87b30"
+      startBlock: 12078319
+      abi: ERC1155Unofficial
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - TransferSingle
+        - TransferBatch
+        - ApprovalForAll
+        - URI
+      abis:
+        - name: ERC1155Unofficial
+          file: ./abis/ERC1155Unofficial.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingleUnofficial
+      file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract
     name: ERC20

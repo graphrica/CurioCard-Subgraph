@@ -9,6 +9,7 @@ import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder } from "./erc20-mapping";
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
+export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
 
 // export const curioArray  = [
 //   { id: 1, displayName: "Curio1", address: "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c" },
@@ -69,14 +70,13 @@ export function handleTransferSingle(event: TransferSingle): void {
   
   var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
   if (cardType != null) {
-    if (event.params._to == ADDRESS_ZERO) {
+    if (event.params._to == ADDRESS_ZERO && event.params._from == ERC1155_ADDRESS) {
       // UNWRAPPED
-      log.info("UNWRAP EVENT - ERC1155",[event.transaction.hash.toHexString()])
+     
       // GET USER SENDER, USER SENDER Balance
       let user_sender = getOrCreateCardHolder(event.params._operator);
       let user_sender_cardBalance = getOrCreateCardBalance(
         event.params._operator,
-        cardType.address.toHexString(),
         cardType,
         user_sender
       );
@@ -91,10 +91,18 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       user_sender_cardBalance.save();
       user_sender.save();
-    } else if (event.params._from == ADDRESS_ZERO) {
+      log.info("ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+    } else if (event.params._from == ADDRESS_ZERO && event.params._operator != ERC1155_WRAPPER) {
       // WRAP EVENT
-      // IGNORE AS IT IS HANDLED IN THE OTHER MAPPING
-      log.info("WRAP EVENT ERC1155 EVENT", [event.transaction.hash.toHexString()])
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
+
+     
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
+      user_recevier_cardBalance.save();
+      user_recevier.save()
+      log.info("ERC1155 WRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     } else {
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
@@ -102,7 +110,6 @@ export function handleTransferSingle(event: TransferSingle): void {
       let user_sender = getOrCreateCardHolder(event.params._from);
       let user_sender_cardBalance = getOrCreateCardBalance(
         event.params._from,
-        cardType.address.toHexString(),
         cardType,
         user_sender
       );
@@ -111,7 +118,6 @@ export function handleTransferSingle(event: TransferSingle): void {
       let user_recevier = getOrCreateCardHolder(event.params._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(
         event.params._to,
-        cardType.address.toHexString(),
         cardType,
         user_recevier
       );
@@ -128,7 +134,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
-      log.info("ERC1155 TRANSFER", [event.transaction.hash.toHexString()])
+      log.info("ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     }
   } else {
     throw "CardType does not exist";

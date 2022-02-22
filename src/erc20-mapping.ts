@@ -1,6 +1,7 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { Transfer } from "../generated/templates/ERC20/ERC20";
+import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
+
 
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
@@ -13,7 +14,7 @@ export function handleTransfer(event: Transfer): void {
     if(event.params.from == CREATOR_ADDRESS) {
        //ERC20 MINT
        let user_recevier = getOrCreateCardHolder(event.params.to);
-       let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, event.address.toHexString(), cardType,user_recevier);
+       let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType, user_recevier);
  
        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
        user_recevier_cardBalance.save()
@@ -22,16 +23,9 @@ export function handleTransfer(event: Transfer): void {
     }
     else if(event.params.to == ERC1155_ADDRESS) {
       //WRAP OF ERC20 and MINT of ERC1155
-      // DECREASE THE UNWRAPPED AND INCREASE WRAPPED BALANCE of USER
-      let user_sender = getOrCreateCardHolder(event.params.from);
-      let user_sender_cardBalance = getOrCreateCardBalance(event.params.from, event.address.toHexString(), cardType, user_sender);
+      // IGNORE AS HANDLED IN OTHER MAPPING
 
-     
-      user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
-      user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(event.params.value);
-      user_sender_cardBalance.save();
-      user_sender.save()
-      log.info("WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
+      log.info("ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
     else if(event.address == event.params.from)
     {
@@ -46,12 +40,12 @@ export function handleTransfer(event: Transfer): void {
 
       // GET USER SENDER, GET USER SENDER CARD Balance
       let user_sender = getOrCreateCardHolder(event.params.from);
-      let user_sender_cardBalance = getOrCreateCardBalance(event.params.from, event.address.toHexString(), cardType,user_sender );
+      let user_sender_cardBalance = getOrCreateCardBalance(event.params.from, cardType,user_sender );
       
       
       // GET USER RECEIVER and USER RECEIVER CARD Balance
       let user_recevier = getOrCreateCardHolder(event.params.to);
-      let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, event.address.toHexString(), cardType,user_recevier);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType,user_recevier);
       
       // DECREASE SENDER BALANCE UNWRAPPED AND save
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(event.params.value);
@@ -71,7 +65,16 @@ export function handleTransfer(event: Transfer): void {
     log.warning("CARDTYPE DOES NOT EXIST", [])
   }
 }
-
+export function handleDirectTransfer(call: TransferCall): void {
+  log.info("START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString()])
+  if (call.transaction.from == ERC1155_ADDRESS){
+    log.info("IGNORE UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
+  }
+  else {
+   
+    log.info("TRANSFER- txfrom: {}, from: {}, to: {}, inputTo: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString()])
+  }
+}
 
 export function getOrCreateCardHolder(address: Address): CardHolder  {
   let user = CardHolder.load(address.toHex());
@@ -82,8 +85,8 @@ export function getOrCreateCardHolder(address: Address): CardHolder  {
   return user;
 }
 
-export function getOrCreateCardBalance(address: Address, contract: string, cardType: CardType, cardHolder : CardHolder): CardBalance  {
-  let cardBalanceID = contract + '-' + address.toHexString();
+export function getOrCreateCardBalance(address: Address, cardType: CardType, cardHolder : CardHolder): CardBalance  {
+  let cardBalanceID = cardType.address.toHexString() + '-' + address.toHexString();
   let cardBalance = CardBalance.load(cardBalanceID);
   if (cardBalance == null) {
     cardBalance = new CardBalance(cardBalanceID);

@@ -65,4 +65,7 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+      callHandlers: 
+        - function: transfer(indexed address,uint256)
+          handler: handleDirectTransfer
       file: ./src/erc20-mapping.ts

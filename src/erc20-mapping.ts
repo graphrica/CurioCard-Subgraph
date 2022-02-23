@@ -72,7 +72,7 @@ export function handleDirectTransfer(call: TransferCall): void {
     log.info("IGNORE UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
   else {
-    var cardType = CardType.load(call.from.toHex())
+    var cardType = CardType.load(call.to.toHex())
     if(cardType != null) {
       let user_sender = getOrCreateCardHolder(call.transaction.from);
       let user_sender_cardBalance = getOrCreateCardBalance(call.transaction.from, cardType,user_sender );
@@ -92,7 +92,10 @@ export function handleDirectTransfer(call: TransferCall): void {
       user_recevier_cardBalance.save();
       user_recevier.save()
       
-      log.info("TRANSFER- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString(),call.inputs._value.toHexString()])
+      log.info("TRANSFER-DIRECT- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString(),call.inputs._value.toHexString()])
+    }
+    else{
+      log.warning("CARD NOT FOUND - address: {}, tx: {}", [call.to.toHex(), call.transaction.hash.toString()])
     }
   }
 }

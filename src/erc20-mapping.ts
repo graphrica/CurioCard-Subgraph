@@ -71,6 +71,9 @@ export function handleDirectTransfer(call: TransferCall): void {
   if (call.transaction.from == ERC1155_ADDRESS || call.transaction.from == ERC1155Unofficial_ADDRESS){
     log.info("IGNORE UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
+  else if(call.inputs._to == ADDRESS_ZERO) {
+    log.info("IGNORE MINT - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
+  }
   else {
     var cardType = CardType.load(call.to.toHex())
     if(cardType != null) {

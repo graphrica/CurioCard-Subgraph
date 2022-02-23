@@ -94,10 +94,6 @@ export function handleDirectTransfer(call: TransferCall): void {
       
       log.info("TRANSFER- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString(),call.inputs._value.toHexString()])
     }
-    else {
-      throw "CardType does not exist";
-    }
-    
   }
 }
 

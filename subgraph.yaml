@@ -29,6 +29,7 @@ dataSources:
     network: mainnet
     source:
       address: "0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313"
+      startBlock: 3678409
       abi: ERC1155
     mapping:
       kind: ethereum/events
@@ -50,6 +51,7 @@ dataSources:
     network: mainnet
     source:
       address: "0x3c2754c0CDc5499df1a50D608D8985070Bf87b30"
+      startBlock: 12078319
       abi: ERC1155Unofficial
     mapping:
       kind: ethereum/events
@@ -89,6 +91,6 @@ templates:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
       callHandlers: 
-        - function: transfer(indexed address,uint256)
+        - function: transfer(address,uint256)
           handler: handleDirectTransfer
       file: ./src/erc20-mapping.ts

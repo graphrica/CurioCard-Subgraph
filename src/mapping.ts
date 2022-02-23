@@ -59,6 +59,15 @@ export function handleCreateCard(call: CreateCardCall): void {
   }
   else if(Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123") == call.outputs.value0){
     log.info("17b IGNORE", [])
+    // let cardType = new CardType(call.outputs.value0.toHex());
+
+    // cardType.supply = call.inputs._initialAmount;
+    // cardType.address = call.outputs.value0;
+    // cardType.symbol = call.inputs._symbol;
+    // cardType.description = call.inputs._desc;
+    // cardType.name = call.inputs._name.replace("Card", "");
+    // cardType.ipfsHash = call.inputs._ipfshash;
+    // cardType.save();
    
   }
   else { 

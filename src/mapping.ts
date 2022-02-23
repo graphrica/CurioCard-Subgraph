@@ -7,13 +7,14 @@ import {
 } from "../generated/ERC1155/ERC1155";
 import {
   TransferSingle as TransferSingleUnofficial,
-  ERC1155Unofficial,
+  ERC1155Unofficial
 } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder } from "./erc20-mapping";
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
 export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
+export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0cdc5499df1a50d608d8985070bf87b30");
 
 // export const curioArray  = [
 //   { id: 1, displayName: "Curio1", address: "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c" },
@@ -46,6 +47,7 @@ export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828
 //   { id: 28, displayName: "Curio28", address: "0x59d190e8a2583c67e62eec8da5ea7f050d8bf27e" },
 //   { id: 29, displayName: "Curio29", address: "0xd3540bcd9c2819771f9d765edc189cbd915feabd" },
 //   { id: 30, displayName: "Curio30", address: "0x7f5b230dc580d1e67df6ed30dee82684dd113d1f" },
+// 17b 0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123
 // ];
 
 
@@ -53,6 +55,11 @@ export function handleCreateCard(call: CreateCardCall): void {
   
   if(Address.fromString("0x39786ae114cb7bca7ac103cb10aab4054c0b144e") == call.outputs.value0){
     log.info("FAKE CURIO CARD MINTED - CURIO SNOW", [])
+   
+  }
+  else if(Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123") == call.outputs.value0){
+    log.info("17b IGNORE", [])
+   
   }
   else { 
     let cardType = new CardType(call.outputs.value0.toHex());
@@ -68,7 +75,7 @@ export function handleCreateCard(call: CreateCardCall): void {
     ERC20.create(call.outputs.value0);
   }
 }
-// ERC1155 Events
+// ERC1155 Official Events
 
 export function handleTransferSingle(event: TransferSingle): void {
   
@@ -147,6 +154,13 @@ export function handleTransferSingle(event: TransferSingle): void {
 
 
 export function handleTransferSingleUnofficial(event: TransferSingleUnofficial): void {
+  if(event.params._id == BigInt.fromI32(171)){
+    log.info("MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+  }
+  else
+  {
+    log.info("EVENT UNOFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+  
   
   var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
   if (cardType != null) {
@@ -172,7 +186,7 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       user_sender_cardBalance.save();
       user_sender.save();
       log.info("ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
-    } else if (event.params._from == ADDRESS_ZERO && event.params._operator != ERC1155_WRAPPER && event.params._operator != ERC1155_WRAPPER) {
+    } else if (event.params._from == ADDRESS_ZERO && event.params._operator != ERC1155Unofficial_ADDRESS) {
       // WRAP EVENT
       let user_recevier = getOrCreateCardHolder(event.params._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
@@ -216,15 +230,19 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       user_recevier.save();
       log.info("ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     }
-  } else {
-    throw "CardType does not exist";
-  }
+  } 
+  } 
 }
 
-export function getCardTypeFromID(id: BigInt, address: Address): CardType {
+export function getCardTypeFromID(id: BigInt, address: Address): CardType | null {
   let contract = ERC1155.bind(address);
-  var nftAddress = contract.contracts(id);
-  var cardType = CardType.load(nftAddress.toHex());
-  if (cardType != null) return cardType;
-  else throw "CardType does not exist";
+  var nftAddress = contract.try_contracts(id);
+  if(!nftAddress.reverted)
+  {
+    var cardType = CardType.load(nftAddress.value.toHex());
+    if (cardType != null) return cardType;
+    return null;
+  }
+  return null;
 }
+

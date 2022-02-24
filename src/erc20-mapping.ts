@@ -77,8 +77,8 @@ export function handleDirectTransfer(call: TransferCall): void {
   else {
     var cardType = CardType.load(call.to.toHex())
     if(cardType != null) {
-      let user_sender = getOrCreateCardHolder(call.transaction.from);
-      let user_sender_cardBalance = getOrCreateCardBalance(call.transaction.from, cardType,user_sender );
+      let user_sender = getOrCreateCardHolder(call.from);
+      let user_sender_cardBalance = getOrCreateCardBalance(call.from, cardType,user_sender );
       
       
       // GET USER RECEIVER and USER RECEIVER CARD Balance

@@ -4,6 +4,7 @@ import { CardType } from "../generated/schema";
 import {
   TransferSingle,
   ERC1155,
+  TransferBatch,
 } from "../generated/ERC1155/ERC1155";
 import {
   TransferSingle as TransferSingleUnofficial,
@@ -158,6 +159,49 @@ export function handleTransferSingle(event: TransferSingle): void {
     }
   } else {
     throw "CardType does not exist";
+  }
+}
+
+export function handleTransferBatch(event: TransferBatch): void {
+  for(var i = 0; i < event.params._ids.length; i++){
+    var cardId = event.params._ids[i];
+    var amount = event.params._values[i];
+
+    var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+    if (cardType != null) {
+      // TRANSFER
+      // GET USER SENDER, GET USER SENDER CARD Balance
+      // GET USER RECEIVER and USER RECEIVER CARD Balance
+      let user_sender = getOrCreateCardHolder(event.params._from);
+      let user_sender_cardBalance = getOrCreateCardBalance(
+        event.params._from,
+        cardType,
+        user_sender
+      );
+
+      // GET USER RECEIVER and USER RECEIVER CARD Balance
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(
+        event.params._to,
+        cardType,
+        user_recevier
+      );
+
+      // DECREASE SENDER BALANCE WRAPPED AND save
+      user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+        amount
+      );
+      user_sender_cardBalance.save();
+      user_sender.save();
+
+      // INCREASE RECEIVER BALANCE WRAPPED AND save
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+        amount
+      );
+      user_recevier_cardBalance.save();
+      user_recevier.save();
+      log.info("ERC1155 BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
+    }
   }
 }
 

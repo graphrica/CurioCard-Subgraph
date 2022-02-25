@@ -6,7 +6,7 @@ type CardType @entity {
   ipfsHash: String 
   symbol: String
   description: String
-  balances: [CardBalance!] @derivedFrom(field: "type")
+  # balances: [CardBalance!] @derivedFrom(field: "type")
 }
 
 

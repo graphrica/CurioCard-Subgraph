@@ -1,13 +1,8 @@
-import { Address, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import { clearEmptyCardBalance, getOrCreateCardBalance, getOrCreateCardHolder } from "./functions";
-
-
-export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
-export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
-export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
-export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0cdc5499df1a50d608d8985070bf87b30");
+import { CREATOR_ADDRESS, ERC1155_ADDRESS, ERC1155Unofficial_ADDRESS, ADDRESS_ZERO } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex())

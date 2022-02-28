@@ -1,6 +1,7 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
+import { clearEmptyCardBalance } from "./mapping";
 
 
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
@@ -57,6 +58,7 @@ export function handleTransfer(event: Transfer): void {
       user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
       user_recevier_cardBalance.save();
       user_recevier.save()
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info("ERC20 TRANSFER - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
 
@@ -94,7 +96,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs._value);
       user_recevier_cardBalance.save();
       user_recevier.save()
-      
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info("TRANSFER-DIRECT- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString(),call.inputs._value.toHexString(), call.transaction.hash.toHexString()])
     }
     else{

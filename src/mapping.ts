@@ -1,6 +1,6 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
 import { CreateCardCall } from "../generated/CardFactory/CardFactory";
-import { CardType } from "../generated/schema";
+import { CardBalance, CardType } from "../generated/schema";
 import {
   TransferSingle,
   ERC1155,
@@ -155,6 +155,8 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
+      //Check sender balance
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info("ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     }
   } else {
@@ -194,17 +196,26 @@ export function handleTransferBatch(event: TransferBatch): void {
       user_sender_cardBalance.save();
       user_sender.save();
 
+
+
       // INCREASE RECEIVER BALANCE WRAPPED AND save
       user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
         amount
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info("ERC1155 BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
     }
   }
 }
 
+
+export function clearEmptyCardBalance(cardBalance : CardBalance) : void {
+  if(cardBalance.unwrappedBalance == BigInt.zero() && cardBalance.wrappedBalance == BigInt.zero()) {
+    store.remove('CardBalance', cardBalance.id);
+  }
+}
 
 export function handleTransferSingleUnofficial(event: TransferSingleUnofficial): void {
   if(event.params._id == BigInt.fromI32(171)){
@@ -281,6 +292,7 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info("ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     }
   } 

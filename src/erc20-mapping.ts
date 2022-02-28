@@ -1,7 +1,7 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, log } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
-import { CardBalance, CardHolder, CardType } from "../generated/schema";
-import { clearEmptyCardBalance } from "./mapping";
+import { CardType } from "../generated/schema";
+import { clearEmptyCardBalance, getOrCreateCardBalance, getOrCreateCardHolder } from "./functions";
 
 
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
@@ -108,26 +108,4 @@ export function handleDirectTransfer(call: TransferCall): void {
   }
 }
 
-export function getOrCreateCardHolder(address: Address): CardHolder  {
-  let user = CardHolder.load(address.toHex());
-  if (user == null) {
-    user = new CardHolder(address.toHex());
-
-  }
-  return user;
-}
-
-export function getOrCreateCardBalance(address: Address, cardType: CardType, cardHolder : CardHolder): CardBalance  {
-  let cardBalanceID = cardType.address.toHexString() + '-' + address.toHexString();
-  let cardBalance = CardBalance.load(cardBalanceID);
-  if (cardBalance == null) {
-    cardBalance = new CardBalance(cardBalanceID);
-    cardBalance.type = cardType.id;
-    cardBalance.unwrappedBalance = BigInt.fromI32(0);
-    cardBalance.wrappedBalance = BigInt.fromI32(0);
-    cardBalance.user = cardHolder.id;
-    cardBalance.save();
-  }
-  return cardBalance;
-}
 

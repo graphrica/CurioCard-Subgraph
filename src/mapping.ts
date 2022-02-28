@@ -1,17 +1,16 @@
-import { Address, BigInt, log, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log} from "@graphprotocol/graph-ts";
 import { CreateCardCall } from "../generated/CardFactory/CardFactory";
-import { CardBalance, CardType } from "../generated/schema";
+import { CardType } from "../generated/schema";
 import {
   TransferSingle,
-  ERC1155,
   TransferBatch,
 } from "../generated/ERC1155/ERC1155";
 import {
   TransferSingle as TransferSingleUnofficial,
-  ERC1155Unofficial
 } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { ERC20 } from "../generated/templates";
-import { getOrCreateCardBalance, getOrCreateCardHolder } from "./erc20-mapping";
+import { getOrCreateCardBalance, getOrCreateCardHolder, clearEmptyCardBalance, getCardTypeFromID} from "./functions";
+
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
 export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
@@ -210,13 +209,6 @@ export function handleTransferBatch(event: TransferBatch): void {
   }
 }
 
-
-export function clearEmptyCardBalance(cardBalance : CardBalance) : void {
-  if(cardBalance.unwrappedBalance == BigInt.zero() && cardBalance.wrappedBalance == BigInt.zero()) {
-    store.remove('CardBalance', cardBalance.id);
-  }
-}
-
 export function handleTransferSingleUnofficial(event: TransferSingleUnofficial): void {
   if(event.params._id == BigInt.fromI32(171)){
     log.info("MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
@@ -295,16 +287,3 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
   } 
   } 
 }
-
-export function getCardTypeFromID(id: BigInt, address: Address): CardType | null {
-  let contract = ERC1155.bind(address);
-  var nftAddress = contract.try_contracts(id);
-  if(!nftAddress.reverted)
-  {
-    var cardType = CardType.load(nftAddress.value.toHex());
-    if (cardType != null) return cardType;
-    return null;
-  }
-  return null;
-}
-

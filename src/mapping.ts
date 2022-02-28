@@ -223,9 +223,6 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
   }
   else
   {
-    log.info("EVENT UNOFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
-  
-  
   var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
   if (cardType != null) {
     if (event.params._operator == ADDRESS_ZERO) {
@@ -249,7 +246,7 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       );
       user_sender_cardBalance.save();
       user_sender.save();
-      log.info("ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+      log.info("ERC1155 UNOFFICAL UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     } else if (event.params._from == ADDRESS_ZERO && event.params._operator != ERC1155Unofficial_ADDRESS) {
       // WRAP EVENT
       let user_recevier = getOrCreateCardHolder(event.params._to);
@@ -260,7 +257,7 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
       user_recevier_cardBalance.save();
       user_recevier.save()
-      log.info("ERC1155 WRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+      log.info("ERC1155 UNOFFICAL WRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     } else {
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
@@ -293,7 +290,7 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       user_recevier_cardBalance.save();
       user_recevier.save();
       clearEmptyCardBalance(user_sender_cardBalance);
-      log.info("ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+      log.info("ERC1155 UNOFFICAL TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     }
   } 
   } 

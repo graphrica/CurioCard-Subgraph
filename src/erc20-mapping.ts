@@ -70,8 +70,11 @@ export function handleTransfer(event: Transfer): void {
 }
 export function handleDirectTransfer(call: TransferCall): void {
   log.info("START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString()])
-  if (call.from == ERC1155_ADDRESS || call.from == ERC1155Unofficial_ADDRESS){
-    log.info("IGNORE UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
+  if (call.from == ERC1155_ADDRESS ||  call.transaction.from == ERC1155_ADDRESS){
+    log.info("IGNORE OFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
+  }
+  else if (call.from == ERC1155Unofficial_ADDRESS || call.transaction.from == ERC1155Unofficial_ADDRESS){
+    log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
   else if(call.inputs._to == ADDRESS_ZERO) {
     log.info("IGNORE MINT - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])

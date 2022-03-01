@@ -2,13 +2,13 @@ import { Address } from "@graphprotocol/graph-ts";
 
 
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
-export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
-export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
-export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0cdc5499df1a50d608d8985070bf87b30");
-export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
-export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6c946d12b");
-export const ZERO_X_EXCHANGE = Address.fromString("0x61935cbdd02287b511119ddb11aeb42f1593b7ef");
-export const CARD_FACTORY = Address.fromString("0x37aab22019448859fc255e6e353a1baf2c05e6bb");
+export const CREATOR_ADDRESS = Address.fromString("0x3CC44273a97E8fbFbCBd3d60200CC9Fd33d84d66");
+export const ERC1155_ADDRESS = Address.fromString("0x73DA73EF3a6982109c4d5BDb0dB9dd3E3783f313");
+export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0CDc5499df1a50D608D8985070Bf87b30");
+export const ERC1155_DEPLOYER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
+export const OPENSEA_V1 = Address.fromString("0x7Be8076f4EA4A4AD08075C2508e481d6C946D12b");
+export const ZERO_X_EXCHANGE = Address.fromString("0x61935CbDd02287B511119DDb11Aeb42F1593b7Ef");
+export const CARD_FACTORY = Address.fromString("0x37AAb22019448859fc255e6E353A1baF2c05E6Bb");
 
 // export const curioArray  = [
 //   { id: 1, displayName: "Curio1", address: "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c" },

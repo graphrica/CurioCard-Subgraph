@@ -11,7 +11,7 @@ import {
 } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder, clearEmptyCardBalance, getCardTypeFromID} from "./functions";
-import { ERC1155_ADDRESS, ADDRESS_ZERO, ERC1155_WRAPPER, ERC1155Unofficial_ADDRESS, OPENSEA_V1 } from "./constants";
+import { ERC1155_ADDRESS, ADDRESS_ZERO, ERC1155Unofficial_ADDRESS, OPENSEA_V1 } from "./constants";
 
 export function handleCreateCard(call: CreateCardCall): void {
   
@@ -74,7 +74,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       user_sender_cardBalance.save();
       user_sender.save();
       log.info("ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
-    } else if (event.params._from == ADDRESS_ZERO && event.params._operator != ERC1155_WRAPPER) {
+    } else if (event.params._from == ADDRESS_ZERO) {
       // WRAP EVENT
       // let user_recevier = getOrCreateCardHolder(event.params._to);
       // let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);

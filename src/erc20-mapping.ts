@@ -20,7 +20,7 @@ export function handleTransfer(event: Transfer): void {
       user_recevier.save()
       log.info("ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
-    else if(event.params.from == CARD_FACTORY)
+    else if(event.params.from == CARD_FACTORY || event.params.from == ADDRESS_ZERO)
     {
       //ERC20 MINT 
       //CREATE A CARD BALANCE USER
@@ -75,7 +75,7 @@ export function handleDirectTransfer(call: TransferCall): void {
     log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
   else if(call.inputs._to == ADDRESS_ZERO) {
-    log.info("IGNORE MINT - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
+    log.info("IGNORE MINT - txfrom: {}, from: {}, to: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString(), call.transaction.hash.toHexString()])
   }
   else {
     var cardType = CardType.load(call.to.toHex())

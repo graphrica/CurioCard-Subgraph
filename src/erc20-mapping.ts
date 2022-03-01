@@ -22,7 +22,7 @@ export function handleTransfer(event: Transfer): void {
     }
     else if(event.params.from == CARD_FACTORY || event.params.from == ADDRESS_ZERO)
     {
-      //ERC20 MINT 
+      //ERC20 MINT // NEVER HAPPENS
       //CREATE A CARD BALANCE USER
       //CREATE A CARD BALANCE for CARDTYPE
       let user_recevier = getOrCreateCardHolder(event.params.to);
@@ -67,6 +67,9 @@ export function handleTransfer(event: Transfer): void {
   }
 }
 export function handleDirectTransfer(call: TransferCall): void {
+
+  var cardType = CardType.load(call.to.toHex())
+  if(cardType != null) {
   log.info("START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString()])
   if (call.from == ERC1155_ADDRESS ||  call.transaction.from == ERC1155_ADDRESS){
     log.info("IGNORE OFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
@@ -74,12 +77,21 @@ export function handleDirectTransfer(call: TransferCall): void {
   else if (call.from == ERC1155Unofficial_ADDRESS || call.transaction.from == ERC1155Unofficial_ADDRESS){
     log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString()])
   }
-  else if(call.inputs._to == ADDRESS_ZERO) {
-    log.info("IGNORE MINT - txfrom: {}, from: {}, to: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString(), call.transaction.hash.toHexString()])
+  else if(call.transaction.from == CARD_FACTORY || call.from == CARD_FACTORY) {
+    let user_recevier = getOrCreateCardHolder(call.inputs._to);
+    let user_recevier_cardBalance = getOrCreateCardBalance(call.inputs._to, cardType, user_recevier);
+
+    user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs._value);
+    user_recevier_cardBalance.save()
+    user_recevier.save();
+    log.info("ERC20 MINT - txfrom: {}, from: {}, to: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString(), call.transaction.hash.toHexString()])
   }
   else {
-    var cardType = CardType.load(call.to.toHex())
-    if(cardType != null) {
+    if(call.inputs._to == ADDRESS_ZERO) {
+      log.info("BURN - txfrom: {}, from: {}, to: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(), call.to.toHexString(), call.transaction.hash.toHexString()])
+    }
+
+  
       let user_sender = getOrCreateCardHolder(call.from);
       let user_sender_cardBalance = getOrCreateCardBalance(call.from, cardType,user_sender );
       
@@ -100,9 +112,10 @@ export function handleDirectTransfer(call: TransferCall): void {
       clearEmptyCardBalance(user_sender_cardBalance);
       log.info("TRANSFER-DIRECT- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}, txHash: {}", [call.transaction.from.toHexString(), call.from.toHexString(),call.to.toHexString(),call.inputs._to.toHexString(),call.inputs._value.toHexString(), call.transaction.hash.toHexString()])
     }
-    else{
-      log.warning("CARD NOT FOUND - address: {}, tx: {}", [call.to.toHex(), call.transaction.hash.toString()])
-    }
+   
+  }
+  else{
+    log.warning("CARD NOT FOUND - address: {}, tx: {}", [call.to.toHex(), call.transaction.hash.toString()])
   }
 }
 

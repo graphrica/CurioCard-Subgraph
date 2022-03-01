@@ -7,6 +7,7 @@ import {
 } from "../generated/ERC1155/ERC1155";
 import {
   TransferSingle as TransferSingleUnofficial,
+  TransferBatch as TransferBatchUnofficial
 } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder, clearEmptyCardBalance, getCardTypeFromID} from "./functions";
@@ -125,7 +126,8 @@ export function handleTransferSingle(event: TransferSingle): void {
 }
 
 export function handleTransferBatch(event: TransferBatch): void {
-  for(var i = 0; i < event.params._ids.length; i++){
+  var arrayLength = event.params._ids.length;
+  for(var i = 0; i < arrayLength; i++){
     var cardId = event.params._ids[i];
     var amount = event.params._values[i];
 
@@ -169,6 +171,62 @@ export function handleTransferBatch(event: TransferBatch): void {
     }
   }
 }
+
+
+export function handleTransferBatchUnofficial(event: TransferBatchUnofficial): void {
+  
+  var arrayLength = event.params._ids.length;
+  for(var i = 0; i < arrayLength; i++){
+    var cardId = event.params._ids[i];
+    var amount = event.params._values[i];
+    if(cardId == BigInt.fromI32(171)){
+      log.info("MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
+    }
+    else
+    {
+    var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+    if (cardType != null) {
+      // TRANSFER
+      // GET USER SENDER, GET USER SENDER CARD Balance
+      // GET USER RECEIVER and USER RECEIVER CARD Balance
+      let user_sender = getOrCreateCardHolder(event.params._from);
+      let user_sender_cardBalance = getOrCreateCardBalance(
+        event.params._from,
+        cardType,
+        user_sender
+      );
+
+      // GET USER RECEIVER and USER RECEIVER CARD Balance
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(
+        event.params._to,
+        cardType,
+        user_recevier
+      );
+
+      // DECREASE SENDER BALANCE WRAPPED AND save
+      user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+        amount
+      );
+      user_sender_cardBalance.save();
+      user_sender.save();
+
+
+
+      // INCREASE RECEIVER BALANCE WRAPPED AND save
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+        amount
+      );
+      user_recevier_cardBalance.save();
+      user_recevier.save();
+      clearEmptyCardBalance(user_sender_cardBalance);
+      log.info("ERC1155 UNOFFICAL BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
+    }
+  }
+}
+}
+
+
 
 export function handleTransferSingleUnofficial(event: TransferSingleUnofficial): void {
   if(event.params._id == BigInt.fromI32(171)){

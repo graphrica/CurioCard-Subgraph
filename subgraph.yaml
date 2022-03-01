@@ -71,6 +71,8 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingleUnofficial
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatchUnofficial
       file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract

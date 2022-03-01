@@ -2,7 +2,7 @@ import { log } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import { clearEmptyCardBalance, getOrCreateCardBalance, getOrCreateCardHolder } from "./functions";
-import { CREATOR_ADDRESS, ERC1155_ADDRESS, ERC1155Unofficial_ADDRESS, ADDRESS_ZERO, ZERO_X_EXCHANGE } from "./constants";
+import { CREATOR_ADDRESS, ERC1155_ADDRESS, ERC1155Unofficial_ADDRESS, ADDRESS_ZERO, ZERO_X_EXCHANGE, CARD_FACTORY } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex())
@@ -20,7 +20,7 @@ export function handleTransfer(event: Transfer): void {
       user_recevier.save()
       log.info("ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
-    else if(event.params.from == ADDRESS_ZERO)
+    else if(event.params.from == CARD_FACTORY)
     {
       //ERC20 MINT 
       //CREATE A CARD BALANCE USER

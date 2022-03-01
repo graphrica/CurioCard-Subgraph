@@ -6,6 +6,8 @@ export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
 export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0cdc5499df1a50d608d8985070bf87b30");
 export const ERC1155_WRAPPER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
+export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6c946d12b");
+export const ZERO_X_EXCHANGE = Address.fromString("0x61935cbdd02287b511119ddb11aeb42f1593b7ef");
 
 // export const curioArray  = [
 //   { id: 1, displayName: "Curio1", address: "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c" },

@@ -2,7 +2,7 @@ import { log } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import { clearEmptyCardBalance, getOrCreateCardBalance, getOrCreateCardHolder } from "./functions";
-import { CREATOR_ADDRESS, ERC1155_ADDRESS, ERC1155Unofficial_ADDRESS, ADDRESS_ZERO } from "./constants";
+import { CREATOR_ADDRESS, ERC1155_ADDRESS, ERC1155Unofficial_ADDRESS, ADDRESS_ZERO, ZERO_X_EXCHANGE } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex())
@@ -40,7 +40,9 @@ export function handleTransfer(event: Transfer): void {
     }
     else { 
       // TRANSFER
-
+      if(event.transaction.from == ZERO_X_EXCHANGE){
+        log.info("ZEROX TRANSFER -  txfrom : {} from: {} to: {} txhash: {}", [ event.transaction.from.toHexString(), event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString() ])
+      }
       // GET USER SENDER, GET USER SENDER CARD Balance
       let user_sender = getOrCreateCardHolder(event.params.from);
       let user_sender_cardBalance = getOrCreateCardBalance(event.params.from, cardType,user_sender );

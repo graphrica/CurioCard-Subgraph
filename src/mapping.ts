@@ -11,7 +11,7 @@ import {
 } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { ERC20 } from "../generated/templates";
 import { getOrCreateCardBalance, getOrCreateCardHolder, clearEmptyCardBalance, getCardTypeFromID} from "./functions";
-import { ERC1155_ADDRESS, ADDRESS_ZERO, ERC1155_WRAPPER, ERC1155Unofficial_ADDRESS } from "./constants";
+import { ERC1155_ADDRESS, ADDRESS_ZERO, ERC1155_WRAPPER, ERC1155Unofficial_ADDRESS, OPENSEA_V1 } from "./constants";
 
 export function handleCreateCard(call: CreateCardCall): void {
   
@@ -86,6 +86,10 @@ export function handleTransferSingle(event: TransferSingle): void {
       // user_recevier.save()
       log.info("IGNORE ERC1155 WRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     } else {
+
+      if(event.params._operator == OPENSEA_V1){
+        log.info("OPENSEA V1 TRADE - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+      }
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
       // GET USER RECEIVER and USER RECEIVER CARD Balance
@@ -130,6 +134,10 @@ export function handleTransferBatch(event: TransferBatch): void {
   for(var i = 0; i < arrayLength; i++){
     var cardId = event.params._ids[i];
     var amount = event.params._values[i];
+
+    if(event.params._operator == OPENSEA_V1){
+      log.info("OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
+    }
 
     var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
     if (cardType != null) {
@@ -186,6 +194,11 @@ export function handleTransferBatchUnofficial(event: TransferBatchUnofficial): v
     {
     var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
     if (cardType != null) {
+
+      if(event.params._operator == OPENSEA_V1){
+        log.info("OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),amount.toHexString(), cardId.toHexString() ])
+      }
+    
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
       // GET USER RECEIVER and USER RECEIVER CARD Balance
@@ -271,6 +284,10 @@ export function handleTransferSingleUnofficial(event: TransferSingleUnofficial):
       log.info("IGNORE ERC1155 UNOFFICAL WRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
     } else {
       // TRANSFER
+
+      if(event.params._operator == OPENSEA_V1){
+        log.info("OPENSEA V1 TRADE - operator: {} from: {} to: {} txhash: {} value: {} id: {}", [ event.params._operator.toHexString() ,event.params._from.toHexString(), event.params._to.toHexString(),event.transaction.hash.toHexString(),event.params._value.toHexString(), event.params._id.toHexString() ])
+      }
       // GET USER SENDER, GET USER SENDER CARD Balance
       // GET USER RECEIVER and USER RECEIVER CARD Balance
       let user_sender = getOrCreateCardHolder(event.params._from);

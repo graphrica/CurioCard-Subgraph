@@ -20,8 +20,14 @@ export function handleTransfer(event: Transfer): void {
     }
     else if(event.params.to == ERC1155_ADDRESS || event.params.to == ERC1155Unofficial_ADDRESS) {
       //WRAP OF ERC20 and MINT of ERC1155
-      // IGNORE AS HANDLED IN OTHER MAPPING
+      let user_recevier = getOrCreateCardHolder(event.params.to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType, user_recevier);
 
+     
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params.value);
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params.value);
+      user_recevier_cardBalance.save();
+      user_recevier.save()
       log.info("ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
     else if(event.address == event.params.from)

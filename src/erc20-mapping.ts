@@ -8,17 +8,7 @@ export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex())
   if (cardType != null) {
     
-    if(event.params.from == CREATOR_ADDRESS) {
-       //ERC20 MINT
-       let user_recevier = getOrCreateCardHolder(event.params.to);
-       let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType, user_recevier);
- 
-       user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
-       user_recevier_cardBalance.save()
-       user_recevier.save();
-       log.info("ERC20 MINT - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
-    }
-    else if(event.params.to == ERC1155_ADDRESS || event.params.to == ERC1155Unofficial_ADDRESS) {
+    if(event.params.to == ERC1155_ADDRESS || event.params.to == ERC1155Unofficial_ADDRESS) {
       //WRAP OF ERC20 and MINT of ERC1155
       let user_recevier = getOrCreateCardHolder(event.params.to);
       let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType, user_recevier);
@@ -30,13 +20,18 @@ export function handleTransfer(event: Transfer): void {
       user_recevier.save()
       log.info("ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
-    else if(event.address == event.params.from)
+    else if(event.params.from == ADDRESS_ZERO)
     {
       //ERC20 MINT 
       //CREATE A CARD BALANCE USER
       //CREATE A CARD BALANCE for CARDTYPE
- 
-      log.info("ERC20 MINT & SEND - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
+      let user_recevier = getOrCreateCardHolder(event.params.to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params.to, cardType, user_recevier);
+
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(event.params.value);
+      user_recevier_cardBalance.save()
+      user_recevier.save();
+      log.info("ERC20 MINT - event.address: {} from: {} to: {} txhash: {}", [ event.address.toHexString() ,event.params.from.toHexString(), event.params.to.toHexString(),event.transaction.hash.toHexString()])
     }
     else { 
       // TRANSFER

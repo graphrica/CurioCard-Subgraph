@@ -72,7 +72,7 @@ export function handleTransferSingle(event: TransferSingle): void {
         cardType,
         user_sender
       );
-
+      
       // DECREASE SENDER WRAPPED BALANCE
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
         event.params._value

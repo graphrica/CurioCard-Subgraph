@@ -14,7 +14,7 @@ import {
   ZERO_X_EXCHANGE,
   CARD_FACTORY,
 } from "./constants";
-
+export {runTests} from "../tests/index.test"
 
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex());
@@ -163,6 +163,24 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.to.toHexString(),
       ]);
     } else if (
+      call.to == ERC1155Unofficial_ADDRESS ||
+      call.transaction.to == ERC1155Unofficial_ADDRESS
+    ) {
+      log.info("IGNORE UNOFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
+        call.transaction.from.toHexString(),
+        call.from.toHexString(),
+        call.to.toHexString(),
+      ]);
+    } else if (
+      call.to == ERC1155_ADDRESS ||
+      call.transaction.to == ERC1155_ADDRESS
+    ) {
+      log.info("IGNORE OFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
+        call.transaction.from.toHexString(),
+        call.from.toHexString(),
+        call.to.toHexString(),
+      ]);
+    }else if (
       call.from == ERC1155Unofficial_ADDRESS ||
       call.transaction.from == ERC1155Unofficial_ADDRESS
     ) {

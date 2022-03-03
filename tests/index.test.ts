@@ -1,11 +1,11 @@
 import { clearStore, test, assert, newMockEvent } from "matchstick-as/assembly/index";
 import { Address, ethereum, BigInt } from "@graphprotocol/graph-ts";
-import { handleTransfer } from "../../src/erc20-mapping";
-import { ERC20, Transfer } from "../../generated/templates/ERC20/ERC20";
-import { CardType } from "../../generated/schema";
-import { ERC20 as ERC20Entity } from "../../generated/templates";
-import { ERC1155_ADDRESS } from "../../src/constants";
-import { getOrCreateCardBalance, getOrCreateCardHolder } from "../../src/functions";
+import { handleTransfer } from "../src/erc20-mapping";
+import { ERC20, Transfer } from "../generated/templates/ERC20/ERC20";
+import { CardType } from "../generated/schema";
+import { ERC20 as ERC20Entity } from "../generated/templates";
+import { ERC1155_ADDRESS } from "../src/constants";
+import { getOrCreateCardBalance, getOrCreateCardHolder } from "../src/functions";
 
 
 const curioCardAddress1 = Address.fromString("0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c")

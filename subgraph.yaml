@@ -45,8 +45,8 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
-        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatch
+        # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+        #   handler: handleTransferBatch
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: ERC1155Unofficial
@@ -71,8 +71,8 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingleUnofficial
-        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-          handler: handleTransferBatchUnofficial
+        # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+        #   handler: handleTransferBatchUnofficial
       file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract

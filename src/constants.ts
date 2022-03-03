@@ -4,7 +4,7 @@ import { Address } from "@graphprotocol/graph-ts";
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
-export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0cdc5499df1a50d608d8985070bf87b30");
+export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0CDc5499df1a50D608D8985070Bf87b30");
 export const ERC1155_DEPLOYER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
 export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6c946d12b");
 export const ZERO_X_EXCHANGE = Address.fromString("0x61935cbdd02287b511119ddb11aeb42f1593b7ef");
@@ -40,6 +40,5 @@ export const CARD_FACTORY = Address.fromString("0x37aab22019448859fc255e6e353a1b
 //   { id: 27, displayName: "Curio27", address: "0xfb9f3fa2502d01d43167a0a6e80be03171df407e" },
 //   { id: 28, displayName: "Curio28", address: "0x59d190e8a2583c67e62eec8da5ea7f050d8bf27e" },
 //   { id: 29, displayName: "Curio29", address: "0xd3540bcd9c2819771f9d765edc189cbd915feabd" },
-//   { id: 30, displayName: "Curio30", address: "0x7f5b230dc580d1e67df6ed30dee82684dd113d1f" },
-// 17b 0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123
+//   { id: 30, displayName: "Curio30", address: "0x7f5b230dc580d1e67df6ed30dee82684dd113d1f" }
 // ];

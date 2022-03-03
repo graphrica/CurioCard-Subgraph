@@ -14,7 +14,6 @@ import {
   ZERO_X_EXCHANGE,
   CARD_FACTORY,
 } from "./constants";
-export {runTests} from "../tests/index.test"
 
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex());
@@ -128,7 +127,7 @@ export function handleTransfer(event: Transfer): void {
       user_recevier.save();
       clearEmptyCardBalance(user_sender_cardBalance);
       log.info(
-        "ERC20 TRANSFER - event.address: {} from: {} to: {} txhash: {}",
+        "ERC20 TRANSFER (eventHandler) - event.address: {} from: {} to: {} txhash: {}",
         [
           event.address.toHexString(),
           event.params.from.toHexString(),
@@ -205,7 +204,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
-      log.info("ERC20 MINT - txfrom: {}, from: {}, to: {}, txHash: {}", [
+      log.info("ERC20 MINT (CALLHANDLER) - txfrom: {}, from: {}, to: {}, txHash: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

@@ -64,7 +64,7 @@ test("ERC1155 Official Transfer - Unwrap Event ", () => {
 });
 
 
-test("ERC1155 Official Transfer - Unwrap Event ", () => {
+test("ERC1155 Official Transfer - Transfer", () => {
     createMockedFunction(ERC1155_ADDRESS, 'try_contracts', 'try_contracts(uint256):(address)')
         .withArgs([ethereum.Value.fromSignedBigInt(BigInt.fromString("1"))])
         .returns([ethereum.Value.fromAddress(curioCardAddress1)])

@@ -11,7 +11,7 @@ import {
   randomSender2,
 } from "./helper";
 
-test("ERC20 Transfer - Wrap Event Official ERC1155", () => {
+test("ERC20 - Wrap Event Official ERC1155", () => {
   mintCardsToUser(randomSender1, BigInt.fromString("2"));
 
   var transfer = createNewERC20TransferEvent(
@@ -31,7 +31,7 @@ test("ERC20 Transfer - Wrap Event Official ERC1155", () => {
   clearStore();
 });
 
-test("ERC20 Transfer - Unwrap Event Official ERC1155 (Ignored)", () => {
+test("ERC20 - Unwrap Event Official ERC1155 (Ignored)", () => {
   mintCardsToUser(randomSender1, BigInt.fromString("2"));
 
   assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
@@ -53,7 +53,7 @@ test("ERC20 Transfer - Unwrap Event Official ERC1155 (Ignored)", () => {
   clearStore();
 });
 
-test("ERC20 Transfer - Unwrap Event Unofficial ERC1155 (Ignored)", () => {
+test("ERC20 - Unwrap Event Unofficial ERC1155 (Ignored)", () => {
   mintCardsToUser(randomSender1, BigInt.fromString("2"));
 
   assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");

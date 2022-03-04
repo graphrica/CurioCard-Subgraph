@@ -1,12 +1,14 @@
 import { clearStore, test, assert, createMockedFunction } from "matchstick-as/assembly/index";
 import { ADDRESS_ZERO, ERC1155_ADDRESS } from "../src/constants";
 
-import { handleTransferSingle } from "../src/mapping";
+import { handleTransferSingleUnofficial } from "../src/mapping";
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { mintCardsToUser, randomSender1, cardBalanceId, createNewERC1155OfficialTransferEvent, curioCardAddress1, randomSender2, cardBalanceId2 } from "./helper";
+import { mintCardsToUser, randomSender1, cardBalanceId, curioCardAddress1, randomSender2, cardBalanceId2, createNewERC1155UnofficialTransferEvent } from "./helper";
 
 
-test("ERC1155 Official - Wrap Event ", () => {
+
+
+test("ERC1155 Unofficial - Wrap Event ", () => {
     createMockedFunction(ERC1155_ADDRESS, 'try_contracts', 'try_contracts(uint256):(address)')
         .withArgs([ethereum.Value.fromSignedBigInt(BigInt.fromString("1"))])
         .returns([ethereum.Value.fromAddress(curioCardAddress1)])
@@ -19,10 +21,10 @@ test("ERC1155 Official - Wrap Event ", () => {
       // Assert the state of the store
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
     assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
-    var wrap = createNewERC1155OfficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
+    var wrap = createNewERC1155UnofficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
 
     // Call mappings
-    handleTransferSingle(wrap);
+    handleTransferSingleUnofficial(wrap);
     
     // Assert the state of the store
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "2");
@@ -32,7 +34,7 @@ test("ERC1155 Official - Wrap Event ", () => {
     clearStore();
 });
 
-test("ERC1155 Official - Unwrap Event ", () => {
+test("ERC1155 Unofficial - Unwrap Event ", () => {
     createMockedFunction(ERC1155_ADDRESS, 'try_contracts', 'try_contracts(uint256):(address)')
         .withArgs([ethereum.Value.fromSignedBigInt(BigInt.fromString("1"))])
         .returns([ethereum.Value.fromAddress(curioCardAddress1)])
@@ -45,12 +47,12 @@ test("ERC1155 Official - Unwrap Event ", () => {
 
 
       // Assert the state of the store
-    var wrap = createNewERC1155OfficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
-    var unwrap = createNewERC1155OfficialTransferEvent(ERC1155_ADDRESS, ADDRESS_ZERO, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
+    var wrap = createNewERC1155UnofficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
+    var unwrap = createNewERC1155UnofficialTransferEvent(randomSender1, randomSender1, ADDRESS_ZERO, BigInt.fromString("1"), BigInt.fromString("2") )
 
     // Call mappings
-    handleTransferSingle(wrap); // I call the contracts function inside this handler with the same ID put into the event.
-    handleTransferSingle(unwrap); // I call the contracts function inside this handler with the same ID put into the event.
+    handleTransferSingleUnofficial(wrap); 
+    handleTransferSingleUnofficial(unwrap); 
     
     // Assert the state of the store
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
@@ -61,7 +63,7 @@ test("ERC1155 Official - Unwrap Event ", () => {
 });
 
 
-test("ERC1155 Official - Transfer", () => {
+test("ERC1155 Unofficial - Transfer", () => {
     createMockedFunction(ERC1155_ADDRESS, 'try_contracts', 'try_contracts(uint256):(address)')
         .withArgs([ethereum.Value.fromSignedBigInt(BigInt.fromString("1"))])
         .returns([ethereum.Value.fromAddress(curioCardAddress1)])
@@ -74,12 +76,12 @@ test("ERC1155 Official - Transfer", () => {
 
 
       // Assert the state of the store
-    var wrap = createNewERC1155OfficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
-    var transfer = createNewERC1155OfficialTransferEvent(randomSender1, randomSender2, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
+    var wrap = createNewERC1155UnofficialTransferEvent(ADDRESS_ZERO, randomSender1, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
+    var transfer = createNewERC1155UnofficialTransferEvent(randomSender1, randomSender2, randomSender1, BigInt.fromString("1"), BigInt.fromString("2") )
 
     // Call mappings
-    handleTransferSingle(wrap); // I call the contracts function inside this handler with the same ID put into the event.
-    handleTransferSingle(transfer); // I call the contracts function inside this handler with the same ID put into the event.
+    handleTransferSingleUnofficial(wrap); 
+    handleTransferSingleUnofficial(transfer); 
     
     // Assert the state of the store
     assert.notInStore("CardBalance", cardBalanceId);

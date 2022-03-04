@@ -6,6 +6,7 @@ import { getOrCreateCardHolder, getOrCreateCardBalance } from "../src/functions"
 import { ERC20 as ERC20Entity } from "../generated/templates";
 import { ERC1155_ADDRESS } from "../src/constants";
 import { TransferSingle } from "../generated/ERC1155/ERC1155";
+import { TransferSingle as TransferSingleUnofficial } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 
 export const curioCardAddress1 = Address.fromString(
   "0x6aa2044c7a0f9e2758edae97247b03a0d7e73d6c"
@@ -82,6 +83,40 @@ export function createNewERC1155OfficialTransferEvent(
     
     return transferEvent;
   }
+
+  export function createNewERC1155UnofficialTransferEvent(
+    from: Address,
+    to: Address,
+    operator: Address,
+    id: BigInt,
+    value: BigInt,
+  ): TransferSingleUnofficial {
+    let mockEvent = newMockEvent();
+    let fromParam = new ethereum.EventParam(
+      "_from",
+      ethereum.Value.fromAddress(from)
+    );
+    let toParam = new ethereum.EventParam("_to", ethereum.Value.fromAddress(to));
+    let operatorParam = new ethereum.EventParam("_operator", ethereum.Value.fromAddress(operator));
+  
+    let valueParam = new ethereum.EventParam("_value", ethereum.Value.fromSignedBigInt(value));
+    let idParam = new ethereum.EventParam("_id", ethereum.Value.fromSignedBigInt(id));
+  
+    // Initialise event (this can be generalised into a separate function)
+    let transferEvent = new TransferSingleUnofficial(
+      mockEvent.address,
+      mockEvent.logIndex,
+      mockEvent.transactionLogIndex,
+      mockEvent.logType,
+      mockEvent.block,
+      mockEvent.transaction,
+      [operatorParam, fromParam, toParam,idParam, valueParam ]
+    );
+  
+    
+    return transferEvent;
+  }
+
 
 export function mintCardsToUser(to: Address, amount: BigInt): void {
   let cardType = new CardType(curioCardAddress1.toHex());

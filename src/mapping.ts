@@ -392,11 +392,11 @@ export function handleTransferSingleUnofficial(
         );
 
         // DECREASE SENDER WRAPPED BALANCE
-        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
+        user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
           event.params._value
         );
         // INCREASE SENDER UNWRAPPED BALANCE
-        user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.wrappedBalance.plus(
+        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(
           event.params._value
         );
         user_sender_cardBalance.save();

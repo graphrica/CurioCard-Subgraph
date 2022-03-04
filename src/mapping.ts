@@ -60,8 +60,7 @@ export function handleTransferSingle(event: TransferSingle): void {
   var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
   if (cardType != null) {
     if (
-      event.params._to == ADDRESS_ZERO &&
-      event.params._from == ERC1155_ADDRESS
+      event.params._to == ADDRESS_ZERO
     ) {
       // UNWRAPPED
 
@@ -120,7 +119,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       // user_recevier.save();
 
       log.info(
-        "IGNORE WRAPPING & MINT OF ERC1155 - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+        "IGNORE WRAPPING & MINT OF ERC1155 OFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
           event.params._operator.toHexString(),
           event.params._from.toHexString(),
@@ -398,9 +397,26 @@ export function handleTransferSingleUnofficial(
         );
       } else if (event.params._from == ADDRESS_ZERO) {
         // WRAP EVENT
+        // GET USER SENDER, USER SENDER Balance
+        let user_sender = getOrCreateCardHolder(event.params._to);
+        let user_sender_cardBalance = getOrCreateCardBalance(
+          event.params._to,
+          cardType,
+          user_sender
+        );
 
+        // DECREASE SENDER WRAPPED BALANCE
+        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
+          event.params._value
+        );
+        // INCREASE SENDER UNWRAPPED BALANCE
+        user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.wrappedBalance.plus(
+          event.params._value
+        );
+        user_sender_cardBalance.save();
+        user_sender.save();
         log.info(
-          "IGNORED WRAPPING & MINT OF ERC1155 - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+          "WRAPPING & MINT OF ERC1155 UNOFFICIAL- operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
             event.params._operator.toHexString(),
             event.params._from.toHexString(),

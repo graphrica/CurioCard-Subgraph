@@ -18,10 +18,10 @@ import {
 export function handleTransfer(event: Transfer): void {
   var cardType = CardType.load(event.address.toHex());
   if (cardType != null) {
-    if (
-      event.params.from == ERC1155_ADDRESS ||
-      event.params.from == ERC1155Unofficial_ADDRESS
+    if (event.params.from == ERC1155Unofficial_ADDRESS ||
+      event.params.from == ERC1155_ADDRESS
     ) {
+
       log.info(
         "UNWRAP IGNORED - event.address: {} from: {} to: {} txhash: {}",
         [
@@ -183,22 +183,22 @@ export function handleDirectTransfer(call: TransferCall): void {
       call.from == ERC1155Unofficial_ADDRESS ||
       call.transaction.from == ERC1155Unofficial_ADDRESS
     ) {
-      let user_recevier = getOrCreateCardHolder(call.inputs._to);
-      let user_recevier_cardBalance = getOrCreateCardBalance(
-        call.inputs._to,
-        cardType,
-        user_recevier
-      );
+      // let user_recevier = getOrCreateCardHolder(call.inputs._to);
+      // let user_recevier_cardBalance = getOrCreateCardBalance(
+      //   call.inputs._to,
+      //   cardType,
+      //   user_recevier
+      // );
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
-        call.inputs._value
-      );
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(
-        call.inputs._value
-      );
-      user_recevier_cardBalance.save();
-      user_recevier.save();
-      log.info("UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [
+      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+      //   call.inputs._value
+      // );
+      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(
+      //   call.inputs._value
+      // );
+      // user_recevier_cardBalance.save();
+      // user_recevier.save();
+      log.info("UNOFFICIAL UNWRAP IGNORE - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

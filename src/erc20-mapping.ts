@@ -37,23 +37,23 @@ export function handleTransfer(event: Transfer): void {
       event.params.to == ERC1155Unofficial_ADDRESS
     ) {
       //WRAP OF ERC20 and MINT of ERC1155
-      let user_recevier = getOrCreateCardHolder(event.params.from);
-      let user_recevier_cardBalance = getOrCreateCardBalance(
-        event.params.from,
-        cardType,
-        user_recevier
-      );
+      // let user_recevier = getOrCreateCardHolder(event.params.from);
+      // let user_recevier_cardBalance = getOrCreateCardBalance(
+      //   event.params.from,
+      //   cardType,
+      //   user_recevier
+      // );
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
-        event.params.value
-      );
-      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-        event.params.value
-      );
-      user_recevier_cardBalance.save();
-      user_recevier.save();
+      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
+      //   event.params.value
+      // );
+      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+      //   event.params.value
+      // );
+      // user_recevier_cardBalance.save();
+      // user_recevier.save();
       log.info(
-        "ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}",
+        "IGNORE ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}",
         [
           event.address.toHexString(),
           event.params.from.toHexString(),
@@ -198,7 +198,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       // );
       // user_recevier_cardBalance.save();
       // user_recevier.save();
-      log.info("UNOFFICIAL UNWRAP IGNORE - txfrom: {}, from: {}, to: {}", [
+      log.info("UNOFFICIAL UNWRAP IGNORE (callhandler) - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

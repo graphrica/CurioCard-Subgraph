@@ -95,31 +95,17 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
     } else if (event.params._from == ADDRESS_ZERO) {
       // WRAP EVENT
-      // let user_recevier = getOrCreateCardHolder(event.params._to);
-      // let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
 
-      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
-      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
-      // user_recevier_cardBalance.save();
-      // user_recevier.save()
-      // let user_recevier = getOrCreateCardHolder(event.params._to);
-      // let user_recevier_cardBalance = getOrCreateCardBalance(
-      //   event.params._to,
-      //   cardType,
-      //   user_recevier
-      // );
-
-      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
-      //   event.params._value
-      // );
-      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-      //   event.params._value
-      // );
-      // user_recevier_cardBalance.save();
-      // user_recevier.save();
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
+      user_recevier_cardBalance.save();
+      user_recevier.save()
+     
 
       log.info(
-        "IGNORE WRAPPING & MINT OF ERC1155 OFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+        "WRAPPING & MINT OF ERC1155 OFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
           event.params._operator.toHexString(),
           event.params._from.toHexString(),

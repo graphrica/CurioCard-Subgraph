@@ -183,7 +183,22 @@ export function handleDirectTransfer(call: TransferCall): void {
       call.from == ERC1155Unofficial_ADDRESS ||
       call.transaction.from == ERC1155Unofficial_ADDRESS
     ) {
-      log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [
+      let user_recevier = getOrCreateCardHolder(call.inputs._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(
+        call.inputs._to,
+        cardType,
+        user_recevier
+      );
+
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+        call.inputs._value
+      );
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(
+        call.inputs._value
+      );
+      user_recevier_cardBalance.save();
+      user_recevier.save();
+      log.info("UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

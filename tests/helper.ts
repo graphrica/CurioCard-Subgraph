@@ -18,7 +18,9 @@ export const randomSender2 = Address.fromString(
 );
 
 export const cardBalanceId =
-  curioCardAddress1.toHexString() + "-" + randomSender1.toHexString();
+  curioCardAddress1.toHex() + "-" + randomSender1.toHex();
+  export const cardBalanceId2 =
+  curioCardAddress1.toHex() + "-" + randomSender2.toHex();
 
 export function createNewERC20TransferEvent(
   from: Address,
@@ -74,7 +76,7 @@ export function createNewERC1155OfficialTransferEvent(
       mockEvent.logType,
       mockEvent.block,
       mockEvent.transaction,
-      [operatorParam, fromParam, toParam, valueParam, idParam]
+      [operatorParam, fromParam, toParam,idParam, valueParam ]
     );
   
     

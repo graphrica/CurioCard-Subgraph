@@ -1,5 +1,5 @@
 import { Address, BigInt, store } from "@graphprotocol/graph-ts";
-import { ERC1155 } from "../generated/ERC1155/ERC1155";
+import { ERC1155 as ERC1155Official} from "../generated/ERC1155/ERC1155";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
 
 // ERC1155 mapping
@@ -16,7 +16,7 @@ export function getCardTypeFromID(
   id: BigInt,
   address: Address
 ): CardType | null {
-  let contract = ERC1155.bind(address);
+  let contract = ERC1155Official.bind(address);
   var nftAddress = contract.try_contracts(id);
   if (!nftAddress.reverted) {
     var cardType = CardType.load(nftAddress.value.toHex());

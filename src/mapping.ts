@@ -71,6 +71,9 @@ export function handleTransferSingle(event: TransferSingle): void {
         cardType,
         user_sender
       );
+      if(user_sender_cardBalance.wrappedBalance.minus(
+        event.params._value
+      ) >= BigInt.fromI32(0)){
       
       // DECREASE SENDER WRAPPED BALANCE
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
@@ -82,6 +85,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       user_sender_cardBalance.save();
       user_sender.save();
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info(
         "ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
@@ -93,19 +97,20 @@ export function handleTransferSingle(event: TransferSingle): void {
           event.params._id.toHexString(),
         ]
       );
+      }
     } else if (event.params._from == ADDRESS_ZERO) {
       // WRAP EVENT
-      let user_recevier = getOrCreateCardHolder(event.params._to);
-      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
+      // let user_recevier = getOrCreateCardHolder(event.params._to);
+      // let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
-      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
-      user_recevier_cardBalance.save();
-      user_recevier.save()
+      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
+      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
+      // user_recevier_cardBalance.save();
+      // user_recevier.save()
      
 
       log.info(
-        "WRAPPING & MINT OF ERC1155 OFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+        "WRAPPING & MINT OF ERC1155 OFFICIAL (IGNORED)- operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
           event.params._operator.toHexString(),
           event.params._from.toHexString(),
@@ -129,6 +134,7 @@ export function handleTransferSingle(event: TransferSingle): void {
           ]
         );
       }
+    
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance
       // GET USER RECEIVER and USER RECEIVER CARD Balance
@@ -138,7 +144,9 @@ export function handleTransferSingle(event: TransferSingle): void {
         cardType,
         user_sender
       );
-
+      if(user_sender_cardBalance.wrappedBalance.minus(
+        event.params._value
+      ) >= BigInt.fromI32(0)){
       // GET USER RECEIVER and USER RECEIVER CARD Balance
       let user_recevier = getOrCreateCardHolder(event.params._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -160,7 +168,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       user_recevier_cardBalance.save();
       user_recevier.save();
       //Check sender balance
-      clearEmptyCardBalance(user_sender_cardBalance);
+      
       log.info(
         "ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
@@ -173,163 +181,165 @@ export function handleTransferSingle(event: TransferSingle): void {
         ]
       );
     }
+    clearEmptyCardBalance(user_sender_cardBalance);
+    }
   } else {
     throw "CardType does not exist";
   }
 }
 
-export function handleTransferBatch(event: TransferBatch): void {
-  var arrayLength = event.params._ids.length;
-  for (var i = 0; i < arrayLength; i++) {
-    var cardId = event.params._ids[i];
-    var amount = event.params._values[i];
+// export function handleTransferBatch(event: TransferBatch): void {
+//   var arrayLength = event.params._ids.length;
+//   for (var i = 0; i < arrayLength; i++) {
+//     var cardId = event.params._ids[i];
+//     var amount = event.params._values[i];
 
-    if (event.params._operator == OPENSEA_V1) {
-      log.info(
-        "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-        [
-          event.params._operator.toHexString(),
-          event.params._from.toHexString(),
-          event.params._to.toHexString(),
-          event.transaction.hash.toHexString(),
-          amount.toHexString(),
-          cardId.toHexString(),
-        ]
-      );
-    }
+//     if (event.params._operator == OPENSEA_V1) {
+//       log.info(
+//         "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+//         [
+//           event.params._operator.toHexString(),
+//           event.params._from.toHexString(),
+//           event.params._to.toHexString(),
+//           event.transaction.hash.toHexString(),
+//           amount.toHexString(),
+//           cardId.toHexString(),
+//         ]
+//       );
+//     }
 
-    var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
-    if (cardType != null) {
-      // TRANSFER
-      // GET USER SENDER, GET USER SENDER CARD Balance
-      // GET USER RECEIVER and USER RECEIVER CARD Balance
-      let user_sender = getOrCreateCardHolder(event.params._from);
-      let user_sender_cardBalance = getOrCreateCardBalance(
-        event.params._from,
-        cardType,
-        user_sender
-      );
+//     var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+//     if (cardType != null) {
+//       // TRANSFER
+//       // GET USER SENDER, GET USER SENDER CARD Balance
+//       // GET USER RECEIVER and USER RECEIVER CARD Balance
+//       let user_sender = getOrCreateCardHolder(event.params._from);
+//       let user_sender_cardBalance = getOrCreateCardBalance(
+//         event.params._from,
+//         cardType,
+//         user_sender
+//       );
 
-      // GET USER RECEIVER and USER RECEIVER CARD Balance
-      let user_recevier = getOrCreateCardHolder(event.params._to);
-      let user_recevier_cardBalance = getOrCreateCardBalance(
-        event.params._to,
-        cardType,
-        user_recevier
-      );
+//       // GET USER RECEIVER and USER RECEIVER CARD Balance
+//       let user_recevier = getOrCreateCardHolder(event.params._to);
+//       let user_recevier_cardBalance = getOrCreateCardBalance(
+//         event.params._to,
+//         cardType,
+//         user_recevier
+//       );
 
-      // DECREASE SENDER BALANCE WRAPPED AND save
-      user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
-        amount
-      );
-      user_sender_cardBalance.save();
-      user_sender.save();
+//       // DECREASE SENDER BALANCE WRAPPED AND save
+//       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+//         amount
+//       );
+//       user_sender_cardBalance.save();
+//       user_sender.save();
 
-      // INCREASE RECEIVER BALANCE WRAPPED AND save
-      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-        amount
-      );
-      user_recevier_cardBalance.save();
-      user_recevier.save();
-      clearEmptyCardBalance(user_sender_cardBalance);
-      log.info(
-        "ERC1155 BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-        [
-          event.params._operator.toHexString(),
-          event.params._from.toHexString(),
-          event.params._to.toHexString(),
-          event.transaction.hash.toHexString(),
-          amount.toHexString(),
-          cardId.toHexString(),
-        ]
-      );
-    }
-  }
-}
+//       // INCREASE RECEIVER BALANCE WRAPPED AND save
+//       user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+//         amount
+//       );
+//       user_recevier_cardBalance.save();
+//       user_recevier.save();
+//       clearEmptyCardBalance(user_sender_cardBalance);
+//       log.info(
+//         "ERC1155 BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+//         [
+//           event.params._operator.toHexString(),
+//           event.params._from.toHexString(),
+//           event.params._to.toHexString(),
+//           event.transaction.hash.toHexString(),
+//           amount.toHexString(),
+//           cardId.toHexString(),
+//         ]
+//       );
+//     }
+//   }
+// }
 
-export function handleTransferBatchUnofficial(
-  event: TransferBatchUnofficial
-): void {
-  var arrayLength = event.params._ids.length;
-  for (var i = 0; i < arrayLength; i++) {
-    var cardId = event.params._ids[i];
-    var amount = event.params._values[i];
-    if (cardId == BigInt.fromI32(171)) {
-      log.info(
-        "MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-        [
-          event.params._operator.toHexString(),
-          event.params._from.toHexString(),
-          event.params._to.toHexString(),
-          event.transaction.hash.toHexString(),
-          amount.toHexString(),
-          cardId.toHexString(),
-        ]
-      );
-    } else {
-      var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
-      if (cardType != null) {
-        if (event.params._operator == OPENSEA_V1) {
-          log.info(
-            "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-            [
-              event.params._operator.toHexString(),
-              event.params._from.toHexString(),
-              event.params._to.toHexString(),
-              event.transaction.hash.toHexString(),
-              amount.toHexString(),
-              cardId.toHexString(),
-            ]
-          );
-        }
+// export function handleTransferBatchUnofficial(
+//   event: TransferBatchUnofficial
+// ): void {
+//   var arrayLength = event.params._ids.length;
+//   for (var i = 0; i < arrayLength; i++) {
+//     var cardId = event.params._ids[i];
+//     var amount = event.params._values[i];
+//     if (cardId == BigInt.fromI32(171)) {
+//       log.info(
+//         "MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+//         [
+//           event.params._operator.toHexString(),
+//           event.params._from.toHexString(),
+//           event.params._to.toHexString(),
+//           event.transaction.hash.toHexString(),
+//           amount.toHexString(),
+//           cardId.toHexString(),
+//         ]
+//       );
+//     } else {
+//       var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+//       if (cardType != null) {
+//         if (event.params._operator == OPENSEA_V1) {
+//           log.info(
+//             "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+//             [
+//               event.params._operator.toHexString(),
+//               event.params._from.toHexString(),
+//               event.params._to.toHexString(),
+//               event.transaction.hash.toHexString(),
+//               amount.toHexString(),
+//               cardId.toHexString(),
+//             ]
+//           );
+//         }
 
-        // TRANSFER
-        // GET USER SENDER, GET USER SENDER CARD Balance
-        // GET USER RECEIVER and USER RECEIVER CARD Balance
-        let user_sender = getOrCreateCardHolder(event.params._from);
-        let user_sender_cardBalance = getOrCreateCardBalance(
-          event.params._from,
-          cardType,
-          user_sender
-        );
+//         // TRANSFER
+//         // GET USER SENDER, GET USER SENDER CARD Balance
+//         // GET USER RECEIVER and USER RECEIVER CARD Balance
+//         let user_sender = getOrCreateCardHolder(event.params._from);
+//         let user_sender_cardBalance = getOrCreateCardBalance(
+//           event.params._from,
+//           cardType,
+//           user_sender
+//         );
 
-        // GET USER RECEIVER and USER RECEIVER CARD Balance
-        let user_recevier = getOrCreateCardHolder(event.params._to);
-        let user_recevier_cardBalance = getOrCreateCardBalance(
-          event.params._to,
-          cardType,
-          user_recevier
-        );
+//         // GET USER RECEIVER and USER RECEIVER CARD Balance
+//         let user_recevier = getOrCreateCardHolder(event.params._to);
+//         let user_recevier_cardBalance = getOrCreateCardBalance(
+//           event.params._to,
+//           cardType,
+//           user_recevier
+//         );
 
-        // DECREASE SENDER BALANCE WRAPPED AND save
-        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
-          amount
-        );
-        user_sender_cardBalance.save();
-        user_sender.save();
+//         // DECREASE SENDER BALANCE WRAPPED AND save
+//         user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+//           amount
+//         );
+//         user_sender_cardBalance.save();
+//         user_sender.save();
 
-        // INCREASE RECEIVER BALANCE WRAPPED AND save
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-          amount
-        );
-        user_recevier_cardBalance.save();
-        user_recevier.save();
-        clearEmptyCardBalance(user_sender_cardBalance);
-        log.info(
-          "ERC1155 UNOFFICAL BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-          [
-            event.params._operator.toHexString(),
-            event.params._from.toHexString(),
-            event.params._to.toHexString(),
-            event.transaction.hash.toHexString(),
-            amount.toHexString(),
-            cardId.toHexString(),
-          ]
-        );
-      }
-    }
-  }
-}
+//         // INCREASE RECEIVER BALANCE WRAPPED AND save
+//         user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+//           amount
+//         );
+//         user_recevier_cardBalance.save();
+//         user_recevier.save();
+//         clearEmptyCardBalance(user_sender_cardBalance);
+//         log.info(
+//           "ERC1155 UNOFFICAL BATCH TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+//           [
+//             event.params._operator.toHexString(),
+//             event.params._from.toHexString(),
+//             event.params._to.toHexString(),
+//             event.transaction.hash.toHexString(),
+//             amount.toHexString(),
+//             cardId.toHexString(),
+//           ]
+//         );
+//       }
+//     }
+//   }
+// }
 
 export function handleTransferSingleUnofficial(
   event: TransferSingleUnofficial
@@ -359,7 +369,10 @@ export function handleTransferSingleUnofficial(
           cardType,
           user_sender
         );
-
+        
+        if(user_sender_cardBalance.wrappedBalance.minus(
+          event.params._value
+        ) >= BigInt.fromI32(0)){
         // DECREASE SENDER WRAPPED BALANCE
         user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
           event.params._value
@@ -370,6 +383,7 @@ export function handleTransferSingleUnofficial(
         );
         user_sender_cardBalance.save();
         user_sender.save();
+        clearEmptyCardBalance(user_sender_cardBalance);
         log.info(
           "ERC1155 UNOFFICAL UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
@@ -380,7 +394,7 @@ export function handleTransferSingleUnofficial(
             event.params._value.toHexString(),
             event.params._id.toHexString(),
           ]
-        );
+        );}
       } else if (event.params._from == ADDRESS_ZERO) {
         // WRAP EVENT
         // GET USER SENDER, USER SENDER Balance
@@ -390,17 +404,20 @@ export function handleTransferSingleUnofficial(
           cardType,
           user_sender
         );
-
-        // DECREASE SENDER WRAPPED BALANCE
+        if(user_sender_cardBalance.unwrappedBalance.minus(
+          event.params._value
+        ) >= BigInt.fromI32(0)){
+        
         user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
           event.params._value
         );
-        // INCREASE SENDER UNWRAPPED BALANCE
+   
         user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.plus(
           event.params._value
         );
         user_sender_cardBalance.save();
         user_sender.save();
+        clearEmptyCardBalance(user_sender_cardBalance);
         log.info(
           "WRAPPING & MINT OF ERC1155 UNOFFICIAL- operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
@@ -412,6 +429,7 @@ export function handleTransferSingleUnofficial(
             event.params._id.toHexString(),
           ]
         );
+        }
       } else {
         // TRANSFER
 
@@ -436,6 +454,9 @@ export function handleTransferSingleUnofficial(
           cardType,
           user_sender
         );
+        if(user_sender_cardBalance.wrappedBalance.minus(
+          event.params._value
+        ) >= BigInt.fromI32(0)){
 
         // GET USER RECEIVER and USER RECEIVER CARD Balance
         let user_recevier = getOrCreateCardHolder(event.params._to);
@@ -457,7 +478,7 @@ export function handleTransferSingleUnofficial(
         );
         user_recevier_cardBalance.save();
         user_recevier.save();
-        clearEmptyCardBalance(user_sender_cardBalance);
+       
         log.info(
           "ERC1155 UNOFFICAL TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
@@ -470,6 +491,8 @@ export function handleTransferSingleUnofficial(
           ]
         );
       }
+      clearEmptyCardBalance(user_sender_cardBalance);
     }
+  }
   }
 }

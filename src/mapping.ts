@@ -71,9 +71,7 @@ export function handleTransferSingle(event: TransferSingle): void {
         cardType,
         user_sender
       );
-      if(user_sender_cardBalance.wrappedBalance.minus(
-        event.params._value
-      ) >= BigInt.fromI32(0)){
+
       
       // DECREASE SENDER WRAPPED BALANCE
       user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
@@ -85,7 +83,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       user_sender_cardBalance.save();
       user_sender.save();
-      clearEmptyCardBalance(user_sender_cardBalance);
+ 
       log.info(
         "ERC1155 UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
@@ -97,20 +95,20 @@ export function handleTransferSingle(event: TransferSingle): void {
           event.params._id.toHexString(),
         ]
       );
-      }
+      
     } else if (event.params._from == ADDRESS_ZERO) {
       // WRAP EVENT
-      // let user_recevier = getOrCreateCardHolder(event.params._to);
-      // let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
+      let user_recevier = getOrCreateCardHolder(event.params._to);
+      let user_recevier_cardBalance = getOrCreateCardBalance(event.params._to, cardType, user_recevier);
 
-      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
-      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
-      // user_recevier_cardBalance.save();
-      // user_recevier.save()
+      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(event.params._value);
+      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(event.params._value);
+      user_recevier_cardBalance.save();
+      user_recevier.save()
      
 
       log.info(
-        "WRAPPING & MINT OF ERC1155 OFFICIAL (IGNORED)- operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+        "WRAPPING & MINT OF ERC1155 OFFICIAL - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
           event.params._operator.toHexString(),
           event.params._from.toHexString(),
@@ -168,7 +166,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       user_recevier_cardBalance.save();
       user_recevier.save();
       //Check sender balance
-      
+      clearEmptyCardBalance(user_sender_cardBalance);
       log.info(
         "ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [
@@ -182,11 +180,13 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
     }
     clearEmptyCardBalance(user_sender_cardBalance);
-    }
-  } else {
+    
+  } }
+  else {
     throw "CardType does not exist";
   }
 }
+
 
 // export function handleTransferBatch(event: TransferBatch): void {
 //   var arrayLength = event.params._ids.length;
@@ -362,7 +362,7 @@ export function handleTransferSingleUnofficial(
       if (event.params._operator == ADDRESS_ZERO) {
         // UNWRAPPED
 
-        // GET USER SENDER, USER SENDER Balance
+        // // GET USER SENDER, USER SENDER Balance
         let user_sender = getOrCreateCardHolder(event.params._to);
         let user_sender_cardBalance = getOrCreateCardBalance(
           event.params._to,
@@ -370,9 +370,7 @@ export function handleTransferSingleUnofficial(
           user_sender
         );
         
-        if(user_sender_cardBalance.wrappedBalance.minus(
-          event.params._value
-        ) >= BigInt.fromI32(0)){
+ 
         // DECREASE SENDER WRAPPED BALANCE
         user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
           event.params._value
@@ -383,9 +381,8 @@ export function handleTransferSingleUnofficial(
         );
         user_sender_cardBalance.save();
         user_sender.save();
-        clearEmptyCardBalance(user_sender_cardBalance);
         log.info(
-          "ERC1155 UNOFFICAL UNWRAP EVENT - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+          "ERC1155 UNOFFICAL UNWRAP EVENT IGNORE - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
             event.params._operator.toHexString(),
             event.params._from.toHexString(),
@@ -395,7 +392,8 @@ export function handleTransferSingleUnofficial(
             event.params._id.toHexString(),
           ]
         );}
-      } else if (event.params._from == ADDRESS_ZERO) {
+      
+     else if (event.params._from == ADDRESS_ZERO) {
         // WRAP EVENT
         // GET USER SENDER, USER SENDER Balance
         let user_sender = getOrCreateCardHolder(event.params._to);
@@ -404,9 +402,7 @@ export function handleTransferSingleUnofficial(
           cardType,
           user_sender
         );
-        if(user_sender_cardBalance.unwrappedBalance.minus(
-          event.params._value
-        ) >= BigInt.fromI32(0)){
+
         
         user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
           event.params._value
@@ -417,7 +413,7 @@ export function handleTransferSingleUnofficial(
         );
         user_sender_cardBalance.save();
         user_sender.save();
-        clearEmptyCardBalance(user_sender_cardBalance);
+
         log.info(
           "WRAPPING & MINT OF ERC1155 UNOFFICIAL- operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
@@ -429,7 +425,7 @@ export function handleTransferSingleUnofficial(
             event.params._id.toHexString(),
           ]
         );
-        }
+        
       } else {
         // TRANSFER
 
@@ -478,7 +474,7 @@ export function handleTransferSingleUnofficial(
         );
         user_recevier_cardBalance.save();
         user_recevier.save();
-       
+
         log.info(
           "ERC1155 UNOFFICAL TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
           [
@@ -492,7 +488,7 @@ export function handleTransferSingleUnofficial(
         );
       }
       clearEmptyCardBalance(user_sender_cardBalance);
-    }
+    }}
   }
-  }
+  
 }

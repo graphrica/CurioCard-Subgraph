@@ -45,26 +45,24 @@ export function handleTransfer(event: Transfer): void {
       else if (event.params.to == ERC1155_ADDRESS ) {
         
       //WRAP OF ERC20 and MINT of ERC1155
-      let user_recevier = getOrCreateCardHolder(event.params.from);
-      let user_recevier_cardBalance = getOrCreateCardBalance(
-        event.params.from,
-        cardType,
-        user_recevier
-      );
-      if(user_recevier_cardBalance.unwrappedBalance.minus(
-        event.params.value
-      ) >= BigInt.fromI32(0)){
+      // let user_recevier = getOrCreateCardHolder(event.params.from);
+      // let user_recevier_cardBalance = getOrCreateCardBalance(
+      //   event.params.from,
+      //   cardType,
+      //   user_recevier
+      // );
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
-        event.params.value
-      );
-      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-        event.params.value
-      );
-      user_recevier_cardBalance.save();
-      user_recevier.save();
+
+      // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
+      //   event.params.value
+      // );
+      // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+      //   event.params.value
+      // );
+      // user_recevier_cardBalance.save();
+      // user_recevier.save();
       log.info(
-        "ERC20 WRAPPING & MINT OF ERC1155 - event.address: {} from: {} to: {} txhash: {}",
+        "ERC20 WRAPPING & MINT OF ERC1155 OFFICIAL (IGNORE) - event.address: {} from: {} to: {} txhash: {}",
         [
           event.address.toHexString(),
           event.params.from.toHexString(),
@@ -72,8 +70,7 @@ export function handleTransfer(event: Transfer): void {
           event.transaction.hash.toHexString(),
         ]
       );
-      clearEmptyCardBalance(user_recevier_cardBalance);
-      }
+
     } else if (
       event.params.from == CARD_FACTORY ||
       event.params.from == ADDRESS_ZERO
@@ -117,9 +114,6 @@ export function handleTransfer(event: Transfer): void {
         cardType,
         user_sender
       );
-      if(user_sender_cardBalance.unwrappedBalance.minus(
-        event.params.value
-      ) >= BigInt.fromI32(0)){
       // GET USER RECEIVER and USER RECEIVER CARD Balance
       let user_recevier = getOrCreateCardHolder(event.params.to);
       let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -152,7 +146,7 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
       }
-    }
+    
   } else {
     log.warning("CARDTYPE DOES NOT EXIST", []);
   }
@@ -215,7 +209,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       // );
       // user_recevier_cardBalance.save();
       // user_recevier.save();
-      log.info("UNOFFICIAL UNWRAP IGNORE (callhandler) - txfrom: {}, from: {}, to: {}", [
+      log.info("UNOFFICIAL UNWRAP IGNORED (callhandler) IGNORE - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

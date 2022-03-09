@@ -22,7 +22,7 @@ dataSources:
           file: ./abis/CardFactory.json
       callHandlers: 
         - function: CreateCard(uint256,string,string,string,string)
-          handler: handleCreateCard
+          handler: handleCreateCard,
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: ERC1155
@@ -47,6 +47,15 @@ dataSources:
           handler: handleTransferSingle
         # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
         #   handler: handleTransferBatch
+      callHandlers:
+        - function: wrap(uint256,uint256)
+          handler: handleOfficialWrap
+        - function: unwrap(uint256,uint256)
+          handler: handleOfficialUnwrap
+        - function: wrapBatch(uint256[],uint256[])
+          handler: handleWrapBatch
+        - function: unwrapBatch(uint256[],uint256[])
+          handler: handleUnwrapBatch
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: ERC1155Unofficial
@@ -73,6 +82,11 @@ dataSources:
           handler: handleTransferSingleUnofficial
         # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
         #   handler: handleTransferBatchUnofficial
+      callHandlers:
+        - function: wrap(uint256,uint256)
+          handler: handleUnofficialWrap
+        - function: unwrap(uint256,uint256)
+          handler: handleUnofficialUnwrap
       file: ./src/mapping.ts
 templates:
   - kind: ethereum/contract

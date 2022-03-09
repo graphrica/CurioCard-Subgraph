@@ -14,9 +14,11 @@ import {
 
 
 
-  test("ERC20 - Wrap Event Official ERC1155 (Ignored)", () => {
+  test("ERC20 - Wrap Event Official ERC1155 (IGNORED)", () => {
     
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
     var transfer = createNewERC20TransferEvent(
       randomSender1,
       ERC1155_ADDRESS,
@@ -78,9 +80,11 @@ import {
     clearStore();
   });
   
-  test("ERC20 Transfer - Wrap Event Unofficial ERC1155 (Ignored)", () => {
+  test("ERC20 Transfer - Wrap Event Unofficial ERC1155", () => {
   
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
     var transfer = createNewERC20TransferEvent(
       randomSender1,
       ERC1155Unofficial_ADDRESS,
@@ -91,8 +95,8 @@ import {
     handleTransfer(transfer);
   
     // Assert the state of the store
-    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
-    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
+    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "2");
+    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "0");
   
     // Clear the store before the next test (optional)
     clearStore();
@@ -102,6 +106,8 @@ import {
   
   test("ERC20 Transfer - Transfer of ERC20", () => {
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
   
     var transfer = createNewERC20TransferEvent(
       randomSender1,

@@ -32,8 +32,24 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
     } else if (event.params.to == ERC1155Unofficial_ADDRESS) {
+        let user_recevier = getOrCreateCardHolder(event.params.from);
+        let user_recevier_cardBalance = getOrCreateCardBalance(
+          event.params.from,
+          cardType,
+          user_recevier
+        );
+
+
+        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
+          event.params.value
+        );
+        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+          event.params.value
+        );
+        user_recevier_cardBalance.save();
+        user_recevier.save();
       log.info(
-        "IGNORE ERC20 WRAPPING & MINT OF ERC1155 UNOFFICIAL - event.address: {} from: {} to: {} txhash: {}",
+        "ERC20 WRAPPING & MINT OF ERC1155 UNOFFICIAL - event.address: {} from: {} to: {} txhash: {}",
         [
           event.address.toHexString(),
           event.params.from.toHexString(),
@@ -173,8 +189,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.to.toHexString(),
       ]);
     } else if (
-      call.to == ERC1155Unofficial_ADDRESS ||
-      call.transaction.to == ERC1155Unofficial_ADDRESS
+      call.to == ERC1155Unofficial_ADDRESS
     ) {
       log.info("IGNORE UNOFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
@@ -191,8 +206,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.to.toHexString(),
       ]);
     }else if (
-      call.from == ERC1155Unofficial_ADDRESS ||
-      call.transaction.from == ERC1155Unofficial_ADDRESS
+      call.from == ERC1155Unofficial_ADDRESS
     ) {
       // let user_recevier = getOrCreateCardHolder(call.inputs._to);
       // let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -209,7 +223,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       // );
       // user_recevier_cardBalance.save();
       // user_recevier.save();
-      log.info("UNOFFICIAL UNWRAP IGNORED (callhandler) IGNORE - txfrom: {}, from: {}, to: {}", [
+      log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

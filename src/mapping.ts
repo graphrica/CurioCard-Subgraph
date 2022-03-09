@@ -166,7 +166,6 @@ export function handleTransferSingle(event: TransferSingle): void {
       user_recevier_cardBalance.save();
       user_recevier.save();
       //Check sender balance
-      clearEmptyCardBalance(user_sender_cardBalance);
       log.info(
         "ERC1155 TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
         [

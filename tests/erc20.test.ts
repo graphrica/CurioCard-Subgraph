@@ -80,7 +80,7 @@ import {
     clearStore();
   });
   
-  test("ERC20 Transfer - Wrap Event Unofficial ERC1155", () => {
+  test("ERC20 Transfer - Wrap Event Unofficial ERC1155 (Ignored)", () => {
   
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
@@ -95,8 +95,8 @@ import {
     handleTransfer(transfer);
   
     // Assert the state of the store
-    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "2");
-    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
   
     // Clear the store before the next test (optional)
     clearStore();

@@ -144,3 +144,31 @@ export function mintCardsToUser(to: Address, amount: BigInt): void {
   user_recevier_cardBalance.save();
   user_recevier.save();
 }
+
+
+export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
+  let cardType = new CardType(curioCardAddress1.toHex());
+
+  cardType.supply = BigInt.fromString("1200");
+  cardType.address = curioCardAddress1;
+  cardType.symbol = "CURIO1";
+  cardType.description = "CurioCard1";
+  cardType.name = "Curio1";
+  cardType.ipfsHash = "SomeHash";
+  cardType.save();
+
+  ERC20Entity.create(curioCardAddress1);
+
+  let user_recevier = getOrCreateCardHolder(to);
+  let user_recevier_cardBalance = getOrCreateCardBalance(
+    to,
+    cardType,
+    user_recevier
+  );
+
+  user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+    amount
+  );
+  user_recevier_cardBalance.save();
+  user_recevier.save();
+}

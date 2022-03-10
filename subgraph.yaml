@@ -56,7 +56,7 @@ dataSources:
           handler: handleOfficialWrapBatch
         - function: unwrapBatch(uint256[],uint256[])
           handler: handleOfficialUnwrapBatch
-      file: ./src/mapping.ts
+      file:  ./src/erc1155Official-mapping.ts
   - kind: ethereum/contract
     name: ERC1155Unofficial
     network: mainnet
@@ -87,7 +87,7 @@ dataSources:
           handler: handleUnofficialWrap
         - function: unwrap(uint256,uint256)
           handler: handleUnofficialUnwrap
-      file: ./src/mapping.ts
+      file: ./src/erc1155Unofficial-mapping.ts
 templates:
   - kind: ethereum/contract
     name: ERC20

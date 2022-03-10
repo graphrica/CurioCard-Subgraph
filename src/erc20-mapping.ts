@@ -32,22 +32,22 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
     } else if (event.params.to == ERC1155Unofficial_ADDRESS) {
-        let user_recevier = getOrCreateCardHolder(event.params.from);
-        let user_recevier_cardBalance = getOrCreateCardBalance(
-          event.params.from,
-          cardType,
-          user_recevier
-        );
+        // let user_recevier = getOrCreateCardHolder(event.params.from);
+        // let user_recevier_cardBalance = getOrCreateCardBalance(
+        //   event.params.from,
+        //   cardType,
+        //   user_recevier
+        // );
 
 
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
-          event.params.value
-        );
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
-          event.params.value
-        );
-        user_recevier_cardBalance.save();
-        user_recevier.save();
+        // user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(
+        //   event.params.value
+        // );
+        // user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+        //   event.params.value
+        // );
+        // user_recevier_cardBalance.save();
+        // user_recevier.save();
       log.info(
         "ERC20 WRAPPING & MINT OF ERC1155 UNOFFICIAL - event.address: {} from: {} to: {} txhash: {}",
         [

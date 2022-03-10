@@ -6,7 +6,7 @@ import {
     TransferSingle
   } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 
-export function handleOfficialWrap(call: WrapCall): void {
+export function handleUnofficialWrap(call: WrapCall): void {
     var cardType = getCardTypeFromID(call.inputs.id, ERC1155_ADDRESS);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
@@ -29,7 +29,7 @@ export function handleOfficialWrap(call: WrapCall): void {
           );
     }
 }
-export function handleOfficialUnwrap(call: UnwrapCall): void {
+export function handleUnofficialUnwrap(call: UnwrapCall): void {
     var cardType = getCardTypeFromID(call.inputs.id, ERC1155_ADDRESS);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);

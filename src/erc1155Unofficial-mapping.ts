@@ -1,7 +1,7 @@
 import { WrapCall, UnwrapCall, TransferBatch } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { ERC1155_ADDRESS, ADDRESS_ZERO, OPENSEA_V1 } from "./constants";
-import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance } from "./functions";
+import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance, checkIfSentToSelf } from "./functions";
 import {
     TransferSingle
   } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
@@ -69,6 +69,7 @@ export function handleTransferSingleUnofficial(
         ]
       );
     } else {
+      if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
       var cardType = getCardTypeFromID(event.params._id);
       if (cardType != null) {
         if (event.params._operator == ADDRESS_ZERO) {
@@ -200,7 +201,20 @@ export function handleTransferSingleUnofficial(
           );
         }
         clearEmptyCardBalance(user_sender_cardBalance);
-      }}
+      }}}
+      else{
+        log.info(
+          "ERC1155 UNOFFICAL SELF SEND - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+          [
+            event.params._operator.toHexString(),
+            event.params._from.toHexString(),
+            event.params._to.toHexString(),
+            event.transaction.hash.toHexString(),
+            event.params._value.toHexString(),
+            event.params._id.toHexString(),
+          ]
+        );
+      }
     }
     
   }
@@ -228,6 +242,7 @@ export function handleTransferBatchUnofficial(
     } else {
       var cardType = getCardTypeFromID(cardId);
       if (cardType != null) {
+      
         if (event.params._operator == OPENSEA_V1) {
           log.info(
             "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",

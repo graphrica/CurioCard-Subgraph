@@ -14,6 +14,12 @@ export function clearEmptyCardBalance(cardBalance: CardBalance): void {
 }
 // let curioArray = new Map<string, number>();
 
+export function checkIfSentToSelf(to: Address, from: Address, operator: Address) : boolean {
+  if(to == from && operator == to) {
+    return true
+  }
+  return false;
+}
 
 export function getCardTypeFromID(
   id: BigInt

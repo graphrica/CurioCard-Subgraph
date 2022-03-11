@@ -1,6 +1,6 @@
 import { WrapCall, UnwrapCall, WrapBatchCall, UnwrapBatchCall, TransferSingle, TransferBatch } from "../generated/ERC1155/ERC1155";
 import { ERC1155_ADDRESS, ADDRESS_ZERO, OPENSEA_V1 } from "./constants";
-import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance } from "./functions";
+import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance, checkIfSentToSelf } from "./functions";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { CardType } from "../generated/schema";
 
@@ -114,6 +114,8 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
 
 export function handleTransferSingle(event: TransferSingle): void {
     var cardType = getCardTypeFromID(event.params._id);
+    if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
+  
     if (cardType != null) {
       if (
         event.params._to == ADDRESS_ZERO
@@ -240,6 +242,19 @@ export function handleTransferSingle(event: TransferSingle): void {
     else {
       throw "CardType does not exist";
     }
+  }   else{
+    log.info(
+      "ERC1155 UNOFFICAL SELF SEND - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
+      [
+        event.params._operator.toHexString(),
+        event.params._from.toHexString(),
+        event.params._to.toHexString(),
+        event.transaction.hash.toHexString(),
+        event.params._value.toHexString(),
+        event.params._id.toHexString(),
+      ]
+    );
+  }
   }
   
 

@@ -2,6 +2,7 @@ import { log, BigInt } from "@graphprotocol/graph-ts";
 import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import {
+  checkIfSentToSelf,
   clearEmptyCardBalance,
   getOrCreateCardBalance,
   getOrCreateCardHolder,
@@ -16,6 +17,8 @@ import {
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
+  if(!checkIfSentToSelf(event.params.to, event.params.from, event.params.from)){
+  
   var cardType = CardType.load(event.address.toHex());
   if (cardType != null) {
     if (event.params.from == ERC1155Unofficial_ADDRESS ||
@@ -166,7 +169,20 @@ export function handleTransfer(event: Transfer): void {
   } else {
     log.warning("CARDTYPE DOES NOT EXIST", []);
   }
-}
+
+} else{
+  log.info(
+    "ERC20 SELF SEND (eventHandler) - event.address: {} from: {} to: {} txhash: {}",
+    [
+      event.address.toHexString(),
+      event.params.from.toHexString(),
+      event.params.to.toHexString(),
+      event.transaction.hash.toHexString(),
+    ]
+  );
+}}
+
+
 export function handleDirectTransfer(call: TransferCall): void {
   var cardType = CardType.load(call.to.toHex());
   if (cardType != null) {

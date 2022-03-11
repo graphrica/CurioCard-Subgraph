@@ -7,7 +7,7 @@ import {
   } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
 
 export function handleUnofficialWrap(call: WrapCall): void {
-    var cardType = getCardTypeFromID(call.inputs.id, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(call.inputs.id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -30,7 +30,7 @@ export function handleUnofficialWrap(call: WrapCall): void {
     }
 }
 export function handleUnofficialUnwrap(call: UnwrapCall): void {
-    var cardType = getCardTypeFromID(call.inputs.id, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(call.inputs.id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -69,7 +69,7 @@ export function handleTransferSingleUnofficial(
         ]
       );
     } else {
-      var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
+      var cardType = getCardTypeFromID(event.params._id);
       if (cardType != null) {
         if (event.params._operator == ADDRESS_ZERO) {
           // UNWRAPPED
@@ -226,7 +226,7 @@ export function handleTransferBatchUnofficial(
         ]
       );
     } else {
-      var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+      var cardType = getCardTypeFromID(cardId);
       if (cardType != null) {
         if (event.params._operator == OPENSEA_V1) {
           log.info(

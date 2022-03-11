@@ -5,7 +5,7 @@ import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { CardType } from "../generated/schema";
 
 export function handleOfficialWrap(call: WrapCall): void {
-    var cardType = getCardTypeFromID(call.inputs._id, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(call.inputs._id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -30,7 +30,7 @@ export function handleOfficialWrap(call: WrapCall): void {
 
 }
 export function handleOfficialUnwrap(call: UnwrapCall): void {
-    var cardType = getCardTypeFromID(call.inputs._id, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(call.inputs._id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -58,7 +58,7 @@ export function handleOfficialWrapBatch(call: WrapBatchCall): void {
         var cardId = call.inputs._ids[i];
         var amount = call.inputs._quantities[i];
 
-        var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+        var cardType = getCardTypeFromID(cardId);
         if (cardType != null) {
             let user_recevier = getOrCreateCardHolder(call.from);
             let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -87,7 +87,7 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
         var cardId = call.inputs._ids[i];
         var amount = call.inputs._quantities[i];
 
-        var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+        var cardType = getCardTypeFromID(cardId);
         if (cardType != null) {
             let user_recevier = getOrCreateCardHolder(call.from);
             let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
@@ -113,7 +113,7 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
 
 
 export function handleTransferSingle(event: TransferSingle): void {
-    var cardType = getCardTypeFromID(event.params._id, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(event.params._id);
     if (cardType != null) {
       if (
         event.params._to == ADDRESS_ZERO
@@ -264,7 +264,7 @@ export function handleTransferBatch(event: TransferBatch): void {
       );
     }
 
-    var cardType = getCardTypeFromID(cardId, ERC1155_ADDRESS);
+    var cardType = getCardTypeFromID(cardId);
     if (cardType != null) {
       // TRANSFER
       // GET USER SENDER, GET USER SENDER CARD Balance

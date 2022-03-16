@@ -16,7 +16,7 @@ import {
   ERC1155Unofficial_ADDRESS,
   ADDRESS_ZERO,
   ZERO_X_EXCHANGE,
-  CARD_FACTORY,
+  CARD_FACTORY2,
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
@@ -76,7 +76,7 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
     } else if (
-      event.params.from == CARD_FACTORY ||
+      event.params.from == CARD_FACTORY2 ||
       event.params.from == ADDRESS_ZERO
     ) {
       //ERC20 MINT // NEVER HAPPENS
@@ -230,8 +230,8 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.to.toHexString(),
       ]);
     } else if (
-      call.transaction.from == CARD_FACTORY ||
-      call.from == CARD_FACTORY
+      call.transaction.from == CARD_FACTORY2 ||
+      call.from == CARD_FACTORY2
     ) {
       let user_recevier = getOrCreateCardHolder(call.inputs._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(

@@ -9,7 +9,7 @@ export const ERC1155_DEPLOYER = Address.fromString("0x53f46bfbecb075b4feb3bce682
 export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6c946d12b");
 export const ZERO_X_EXCHANGE = Address.fromString("0x61935cbdd02287b511119ddb11aeb42f1593b7ef");
 export const CARD_FACTORY = Address.fromString("0x37aab22019448859fc255e6e353a1baf2c05e6bb");
-
+export const CARD_FACTORY2 = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
 
 // let myMap = new Map<string, string>([
 //   ["key1", "value1"],

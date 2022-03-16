@@ -1,5 +1,9 @@
 import { log, BigInt, Address } from "@graphprotocol/graph-ts";
-import { ERC20, Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
+import {
+  ERC20,
+  Transfer,
+  TransferCall,
+} from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import {
   checkIfSentToSelf,
@@ -16,14 +20,32 @@ import {
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
-  if(!checkIfSentToSelf(event.params.to, event.params.from, event.params.from)){
-  
-  var cardType = CardType.load(event.address.toHex());
-  if (cardType != null) {
-    if (event.params.from == ERC1155Unofficial_ADDRESS ||
+  if (
+    !checkIfSentToSelf(event.params.to, event.params.from, event.params.from)
+  ) {
+    let cardType = CardType.load(event.address.toHex());
+    if (cardType == null) {
+      cardType = new CardType(
+        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+      );
+
+      cardType.supply = BigInt.fromI32(323);
+      cardType.address = Address.fromString(
+        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+      );
+      cardType.symbol = "17b";
+      cardType.description = "MISPRINT";
+      cardType.name = "Curio17b";
+      cardType.ipfsHash = "";
+      cardType.save();
+
+      log.warning("CARDTYPE DOES NOT EXIST - 17b CREATED", []);
+    }
+
+    if (
+      event.params.from == ERC1155Unofficial_ADDRESS ||
       event.params.from == ERC1155_ADDRESS
     ) {
-
       log.info(
         "UNWRAP IGNORED - event.address: {} from: {} to: {} txhash: {}",
         [
@@ -34,7 +56,6 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
     } else if (event.params.to == ERC1155Unofficial_ADDRESS) {
-      
       log.info(
         "ERC20 WRAPPING & MINT OF ERC1155 UNOFFICIAL (IGNORED) - event.address: {} from: {} to: {} txhash: {}",
         [
@@ -44,8 +65,7 @@ export function handleTransfer(event: Transfer): void {
           event.transaction.hash.toHexString(),
         ]
       );
-      }
-      else if (event.params.to == ERC1155_ADDRESS ) {
+    } else if (event.params.to == ERC1155_ADDRESS) {
       log.info(
         "ERC20 WRAPPING & MINT OF ERC1155 OFFICIAL (IGNORED) - event.address: {} from: {} to: {} txhash: {}",
         [
@@ -55,7 +75,6 @@ export function handleTransfer(event: Transfer): void {
           event.transaction.hash.toHexString(),
         ]
       );
-
     } else if (
       event.params.from == CARD_FACTORY ||
       event.params.from == ADDRESS_ZERO
@@ -76,12 +95,15 @@ export function handleTransfer(event: Transfer): void {
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
-      log.info("ERC20 MINT (SHOULD NEVER HAPPEN)- event.address: {} from: {} to: {} txhash: {}", [
-        event.address.toHexString(),
-        event.params.from.toHexString(),
-        event.params.to.toHexString(),
-        event.transaction.hash.toHexString(),
-      ]);
+      log.info(
+        "ERC20 MINT (SHOULD NEVER HAPPEN)- event.address: {} from: {} to: {} txhash: {}",
+        [
+          event.address.toHexString(),
+          event.params.from.toHexString(),
+          event.params.to.toHexString(),
+          event.transaction.hash.toHexString(),
+        ]
+      );
     } else {
       // TRANSFER
       if (event.transaction.from == ZERO_X_EXCHANGE) {
@@ -92,7 +114,7 @@ export function handleTransfer(event: Transfer): void {
           event.transaction.hash.toHexString(),
         ]);
       }
-   
+
       // GET USER SENDER, GET USER SENDER CARD Balance
       let user_sender = getOrCreateCardHolder(event.params.from);
       let user_sender_cardBalance = getOrCreateCardBalance(
@@ -133,41 +155,41 @@ export function handleTransfer(event: Transfer): void {
           event.transaction.hash.toHexString(),
         ]
       );
-      }
-    
+    }
   } else {
-   
-      let cardType = new CardType(Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb").toHex());
+    log.info(
+      "ERC20 SELF SEND (eventHandler) - event.address: {} from: {} to: {} txhash: {}",
+      [
+        event.address.toHexString(),
+        event.params.from.toHexString(),
+        event.params.to.toHexString(),
+        event.transaction.hash.toHexString(),
+      ]
+    );
+  }
+}
+
+export function handleDirectTransfer(call: TransferCall): void {
+  if (!checkIfSentToSelf(call.inputs._to, call.from, call.from)) {
+    let cardType = CardType.load(call.to.toHex());
+    if (cardType == null) {
+      cardType = new CardType(
+        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+      );
 
       cardType.supply = BigInt.fromI32(323);
-      cardType.address = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
+      cardType.address = Address.fromString(
+        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+      );
       cardType.symbol = "17b";
       cardType.description = "MISPRINT";
       cardType.name = "Curio17b";
       cardType.ipfsHash = "";
       cardType.save();
-     
+
       log.warning("CARDTYPE DOES NOT EXIST - 17b CREATED", []);
-  
     }
-    
 
-} else{
-  log.info(
-    "ERC20 SELF SEND (eventHandler) - event.address: {} from: {} to: {} txhash: {}",
-    [
-      event.address.toHexString(),
-      event.params.from.toHexString(),
-      event.params.to.toHexString(),
-      event.transaction.hash.toHexString(),
-    ]
-  );
-}}
-
-
-export function handleDirectTransfer(call: TransferCall): void {
-  var cardType = CardType.load(call.to.toHex());
-  if (cardType != null) {
     log.info(
       "START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}",
       [
@@ -186,9 +208,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.from.toHexString(),
         call.to.toHexString(),
       ]);
-    } else if (
-      call.to == ERC1155Unofficial_ADDRESS
-    ) {
+    } else if (call.to == ERC1155Unofficial_ADDRESS) {
       log.info("IGNORE UNOFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
@@ -203,9 +223,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.from.toHexString(),
         call.to.toHexString(),
       ]);
-    }else if (
-      call.from == ERC1155Unofficial_ADDRESS
-    ) {
+    } else if (call.from == ERC1155Unofficial_ADDRESS) {
       log.info("IGNORE UNOFFICIAL UNWRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
@@ -228,12 +246,15 @@ export function handleDirectTransfer(call: TransferCall): void {
       );
       user_recevier_cardBalance.save();
       user_recevier.save();
-      log.info("ERC20 MINT (CALLHANDLER) - txfrom: {}, from: {}, to: {}, txHash: {}", [
-        call.transaction.from.toHexString(),
-        call.from.toHexString(),
-        call.to.toHexString(),
-        call.transaction.hash.toHexString(),
-      ]);
+      log.info(
+        "ERC20 MINT (CALLHANDLER) - txfrom: {}, from: {}, to: {}, txHash: {}",
+        [
+          call.transaction.from.toHexString(),
+          call.from.toHexString(),
+          call.to.toHexString(),
+          call.transaction.hash.toHexString(),
+        ]
+      );
     } else {
       if (call.inputs._to == ADDRESS_ZERO) {
         log.info("BURN - txfrom: {}, from: {}, to: {}, txHash: {}", [
@@ -251,64 +272,57 @@ export function handleDirectTransfer(call: TransferCall): void {
         user_sender,
         call.block.number
       );
-      if(user_sender_cardBalance.unwrappedBalance.minus(
-        call.inputs._value
-      ) >= BigInt.fromI32(0)){
-      // GET USER RECEIVER and USER RECEIVER CARD Balance
-      let user_recevier = getOrCreateCardHolder(call.inputs._to);
-      let user_recevier_cardBalance = getOrCreateCardBalance(
-        call.inputs._to,
-        cardType,
-        user_recevier,
-        call.block.number
-      );
+      if (
+        user_sender_cardBalance.unwrappedBalance.minus(call.inputs._value) >=
+        BigInt.fromI32(0)
+      ) {
+        // GET USER RECEIVER and USER RECEIVER CARD Balance
+        let user_recevier = getOrCreateCardHolder(call.inputs._to);
+        let user_recevier_cardBalance = getOrCreateCardBalance(
+          call.inputs._to,
+          cardType,
+          user_recevier,
+          call.block.number
+        );
 
-      
+        // DECREASE SENDER BALANCE UNWRAPPED AND save
+        user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
+          call.inputs._value
+        );
+        user_sender_cardBalance.save();
 
-      
-      // DECREASE SENDER BALANCE UNWRAPPED AND save
-      user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
-        call.inputs._value
-      );
-      user_sender_cardBalance.save();
-
-      user_sender.save();
-      // INCREASE RECEIVER BALANCE UNWRAPPED AND save
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
-        call.inputs._value
-      );
-      user_recevier_cardBalance.save();
-      user_recevier.save();
-      clearEmptyCardBalance(user_sender_cardBalance);
-      log.info(
-        "TRANSFER-DIRECT- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}, txHash: {}",
-        [
-          call.transaction.from.toHexString(),
-          call.from.toHexString(),
-          call.to.toHexString(),
-          call.inputs._to.toHexString(),
-          call.inputs._value.toHexString(),
-          call.transaction.hash.toHexString(),
-        ]
-      );
-    }
+        user_sender.save();
+        // INCREASE RECEIVER BALANCE UNWRAPPED AND save
+        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+          call.inputs._value
+        );
+        user_recevier_cardBalance.save();
+        user_recevier.save();
+        clearEmptyCardBalance(user_sender_cardBalance);
+        log.info(
+          "TRANSFER-DIRECT- txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}, txHash: {}",
+          [
+            call.transaction.from.toHexString(),
+            call.from.toHexString(),
+            call.to.toHexString(),
+            call.inputs._to.toHexString(),
+            call.inputs._value.toHexString(),
+            call.transaction.hash.toHexString(),
+          ]
+        );
+      }
     }
   } else {
-    
-      let cardType = new CardType(Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb").toHex());
-
-      cardType.supply = BigInt.fromI32(323);
-      cardType.address = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
-      cardType.symbol = "17b";
-      cardType.description = "MISPRINT";
-      cardType.name = "Curio17b";
-      cardType.ipfsHash = "";
-      cardType.save();
-    
-   
-    log.warning("CARD NOT FOUND - address: {}, tx: {}", [
-      call.to.toHex(),
-      call.transaction.hash.toString(),
-    ]);
+    log.info(
+      "SELF-SEND 17b - txfrom: {}, from: {}, to: {}, inputTo: {}, value: {}, txHash: {}",
+      [
+        call.transaction.from.toHexString(),
+        call.from.toHexString(),
+        call.to.toHexString(),
+        call.inputs._to.toHexString(),
+        call.inputs._value.toHexString(),
+        call.transaction.hash.toHexString(),
+      ]
+    );
   }
 }

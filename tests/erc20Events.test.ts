@@ -3,7 +3,8 @@ import {
   test,
   assert,
   describe,
-  beforeEach,
+  beforeAll,
+  log
 } from "matchstick-as/assembly/index";
 import { BigInt } from "@graphprotocol/graph-ts";
 import { handleTransfer } from "../src/erc20-mapping";
@@ -20,8 +21,9 @@ import {
 
 describe("ERC20 Transfer Event Tests", () => {
 
-  beforeEach(() => {
+  beforeAll(() => {
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    log.info("Here", [])
   })
 
   test("ERC20 - Wrap Event Official ERC1155 (IGNORED)", () => {

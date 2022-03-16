@@ -11,7 +11,7 @@ export function handleCreateCard(call: CreateCardCall): void {
   ) {
     log.info("FAKE CURIO CARD MINTED - CURIO SNOW", []);
   } else if (
-    Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123") ==
+    Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123") ==
     call.outputs.value0
   ) {
     log.info("17b", []);

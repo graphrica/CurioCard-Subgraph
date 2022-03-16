@@ -26,12 +26,12 @@ export function handleTransfer(event: Transfer): void {
     let cardType = CardType.load(event.address.toHex());
     if (cardType == null) {
       cardType = new CardType(
-        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+        Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123").toHex()
       );
 
       cardType.supply = BigInt.fromI32(323);
       cardType.address = Address.fromString(
-        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+        "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
       cardType.symbol = "17b";
       cardType.description = "MISPRINT";
@@ -174,12 +174,12 @@ export function handleDirectTransfer(call: TransferCall): void {
     let cardType = CardType.load(call.to.toHex());
     if (cardType == null) {
       cardType = new CardType(
-        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+        Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123").toHex()
       );
 
       cardType.supply = BigInt.fromI32(323);
       cardType.address = Address.fromString(
-        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+        "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
       cardType.symbol = "17b";
       cardType.description = "MISPRINT";

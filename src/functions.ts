@@ -86,7 +86,7 @@ export function getCardTypeFromID(
   } else if(id == BigInt.fromString("30")){
     address = Address.fromString("0x7f5b230dc580d1e67df6ed30dee82684dd113d1f");
   } else if(id == BigInt.fromString("171")){
-    address = Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123");
+    address = Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123");
   }
 
   if(address == ADDRESS_ZERO)

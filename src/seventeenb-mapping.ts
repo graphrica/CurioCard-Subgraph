@@ -33,7 +33,7 @@ export function handleTransfer(event: Transfer): void {
       cardType.address = Address.fromString(
         "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
-      cardType.symbol = "17b";
+      cardType.symbol = "CRO17b";
       cardType.description = "MISPRINT";
       cardType.name = "Curio17b";
       cardType.ipfsHash = "";
@@ -181,7 +181,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       cardType.address = Address.fromString(
         "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
-      cardType.symbol = "17b";
+      cardType.symbol = "CRO17b";
       cardType.description = "MISPRINT";
       cardType.name = "Curio17b";
       cardType.ipfsHash = "";

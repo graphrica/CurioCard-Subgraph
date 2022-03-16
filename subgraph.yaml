@@ -25,11 +25,36 @@ dataSources:
           handler: handleCreateCard
       file: ./src/mapping.ts
   - kind: ethereum/contract
+    name: SeventeenB
+    network: mainnet
+    source:
+      address: "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+      startBlock: 3902087
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CardHolder
+        - CardBalance
+        - CardType
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      callHandlers: 
+        - function: transfer(address,uint256)
+          handler: handleDirectTransfer
+      file: ./src/seventeenb-mapping.ts
+  - kind: ethereum/contract
     name: ERC1155
     network: mainnet
     source:
       address: "0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313"
-      startBlock: 3678409
+      startBlock: 12129110
       abi: ERC1155
     mapping:
       kind: ethereum/events
@@ -45,9 +70,18 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
-        # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-        #   handler: handleTransferBatch
-      file: ./src/mapping.ts
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+      callHandlers: 
+        - function: wrap(uint256,uint256)
+          handler: handleOfficialWrap
+        - function: unwrap(uint256,uint256)
+          handler: handleOfficialUnwrap
+        - function: wrapBatch(uint256[],uint256[])
+          handler: handleOfficialWrapBatch
+        - function: unwrapBatch(uint256[],uint256[])
+          handler: handleOfficialUnwrapBatch
+      file:  ./src/erc1155Official-mapping.ts
   - kind: ethereum/contract
     name: ERC1155Unofficial
     network: mainnet
@@ -71,9 +105,14 @@ dataSources:
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingleUnofficial
-        # - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
-        #   handler: handleTransferBatchUnofficial
-      file: ./src/mapping.ts
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatchUnofficial
+      callHandlers: 
+        - function: wrap(uint256,uint256)
+          handler: handleUnofficialWrap
+        - function: unwrap(uint256,uint256)
+          handler: handleUnofficialUnwrap
+      file: ./src/erc1155Unofficial-mapping.ts
 templates:
   - kind: ethereum/contract
     name: ERC20

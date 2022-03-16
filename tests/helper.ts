@@ -135,7 +135,8 @@ export function mintCardsToUser(to: Address, amount: BigInt): void {
   let user_recevier_cardBalance = getOrCreateCardBalance(
     to,
     cardType,
-    user_recevier
+    user_recevier,
+    BigInt.fromI32(1)
   );
 
   user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
@@ -163,7 +164,8 @@ export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
   let user_recevier_cardBalance = getOrCreateCardBalance(
     to,
     cardType,
-    user_recevier
+    user_recevier,
+    BigInt.fromI32(1)
   );
 
   user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(

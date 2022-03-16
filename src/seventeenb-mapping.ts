@@ -16,7 +16,7 @@ import {
   ERC1155Unofficial_ADDRESS,
   ADDRESS_ZERO,
   ZERO_X_EXCHANGE,
-  CARD_FACTORY,
+  CARD_FACTORY2,
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
@@ -26,12 +26,12 @@ export function handleTransfer(event: Transfer): void {
     let cardType = CardType.load(event.address.toHex());
     if (cardType == null) {
       cardType = new CardType(
-        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+        Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123").toHex()
       );
 
       cardType.supply = BigInt.fromI32(323);
       cardType.address = Address.fromString(
-        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+        "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
       cardType.symbol = "17b";
       cardType.description = "MISPRINT";
@@ -76,7 +76,7 @@ export function handleTransfer(event: Transfer): void {
         ]
       );
     } else if (
-      event.params.from == CARD_FACTORY ||
+      event.params.from == CARD_FACTORY2 ||
       event.params.from == ADDRESS_ZERO
     ) {
       //ERC20 MINT // NEVER HAPPENS
@@ -174,12 +174,12 @@ export function handleDirectTransfer(call: TransferCall): void {
     let cardType = CardType.load(call.to.toHex());
     if (cardType == null) {
       cardType = new CardType(
-        Address.fromString("0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123").toHex()
+        Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123").toHex()
       );
 
       cardType.supply = BigInt.fromI32(323);
       cardType.address = Address.fromString(
-        "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+        "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );
       cardType.symbol = "17b";
       cardType.description = "MISPRINT";
@@ -230,8 +230,8 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.to.toHexString(),
       ]);
     } else if (
-      call.transaction.from == CARD_FACTORY ||
-      call.from == CARD_FACTORY
+      call.transaction.from == CARD_FACTORY2 ||
+      call.from == CARD_FACTORY2
     ) {
       let user_recevier = getOrCreateCardHolder(call.inputs._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(

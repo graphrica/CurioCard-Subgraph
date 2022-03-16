@@ -1,5 +1,5 @@
-import { log, BigInt } from "@graphprotocol/graph-ts";
-import { Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
+import { log, BigInt, Address } from "@graphprotocol/graph-ts";
+import { ERC20, Transfer, TransferCall } from "../generated/templates/ERC20/ERC20";
 import { CardType } from "../generated/schema";
 import {
   checkIfSentToSelf,
@@ -136,8 +136,21 @@ export function handleTransfer(event: Transfer): void {
       }
     
   } else {
-    log.warning("CARDTYPE DOES NOT EXIST", []);
-  }
+   
+      let cardType = new CardType(Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb").toHex());
+
+      cardType.supply = BigInt.fromI32(323);
+      cardType.address = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
+      cardType.symbol = "17b";
+      cardType.description = "MISPRINT";
+      cardType.name = "Curio17b";
+      cardType.ipfsHash = "";
+      cardType.save();
+     
+      log.warning("CARDTYPE DOES NOT EXIST - 17b CREATED", []);
+  
+    }
+    
 
 } else{
   log.info(
@@ -281,6 +294,18 @@ export function handleDirectTransfer(call: TransferCall): void {
     }
     }
   } else {
+    
+      let cardType = new CardType(Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb").toHex());
+
+      cardType.supply = BigInt.fromI32(323);
+      cardType.address = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
+      cardType.symbol = "17b";
+      cardType.description = "MISPRINT";
+      cardType.name = "Curio17b";
+      cardType.ipfsHash = "";
+      cardType.save();
+    
+   
     log.warning("CARD NOT FOUND - address: {}, tx: {}", [
       call.to.toHex(),
       call.transaction.hash.toString(),

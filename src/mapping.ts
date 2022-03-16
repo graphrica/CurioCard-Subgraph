@@ -15,6 +15,7 @@ export function handleCreateCard(call: CreateCardCall): void {
     call.outputs.value0
   ) {
     log.info("17b", []);
+   
   } else {
     let cardType = new CardType(call.outputs.value0.toHex());
 
@@ -29,4 +30,5 @@ export function handleCreateCard(call: CreateCardCall): void {
     ERC20.create(call.outputs.value0);
   }
 }
+// ERC1155 Official Events
 

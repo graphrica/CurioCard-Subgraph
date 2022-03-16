@@ -85,6 +85,8 @@ export function getCardTypeFromID(
     address = Address.fromString("0xd3540bcd9c2819771f9d765edc189cbd915feabd");
   } else if(id == BigInt.fromString("30")){
     address = Address.fromString("0x7f5b230dc580d1e67df6ed30dee82684dd113d1f");
+  } else if(id == BigInt.fromString("171")){
+    address = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
   }
 
   if(address == ADDRESS_ZERO)
@@ -107,7 +109,8 @@ export function getOrCreateCardHolder(address: Address): CardHolder {
 export function getOrCreateCardBalance(
   address: Address,
   cardType: CardType,
-  cardHolder: CardHolder
+  cardHolder: CardHolder,
+  blockNumber: BigInt
 ): CardBalance {
   let cardBalanceID =
     cardType.address.toHexString() + "-" + address.toHexString();
@@ -118,7 +121,9 @@ export function getOrCreateCardBalance(
     cardBalance.unwrappedBalance = BigInt.fromI32(0);
     cardBalance.wrappedBalance = BigInt.fromI32(0);
     cardBalance.user = cardHolder.id;
+    cardBalance.blockNumber = blockNumber;
     cardBalance.save();
   }
+  cardBalance.blockNumber = blockNumber;
   return cardBalance;
 }

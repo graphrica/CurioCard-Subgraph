@@ -16,6 +16,7 @@ type CardBalance @entity {
     wrappedBalance: BigInt!
     unwrappedBalance: BigInt!
     user: CardHolder! 
+    blockNumber: BigInt!
 }
 
 type CardHolder @entity {

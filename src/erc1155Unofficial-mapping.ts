@@ -10,7 +10,7 @@ export function handleUnofficialWrap(call: WrapCall): void {
     var cardType = getCardTypeFromID(call.inputs.id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
-        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
         user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(call.inputs.amount);
         user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(call.inputs.amount);
@@ -33,7 +33,7 @@ export function handleUnofficialUnwrap(call: UnwrapCall): void {
     var cardType = getCardTypeFromID(call.inputs.id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
-        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
         user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(call.inputs.amount);
         user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs.amount);
@@ -56,19 +56,7 @@ export function handleUnofficialUnwrap(call: UnwrapCall): void {
 export function handleTransferSingleUnofficial(
     event: TransferSingle
   ): void {
-    if (event.params._id == BigInt.fromI32(171)) {
-      log.info(
-        "MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-        [
-          event.params._operator.toHexString(),
-          event.params._from.toHexString(),
-          event.params._to.toHexString(),
-          event.transaction.hash.toHexString(),
-          event.params._value.toHexString(),
-          event.params._id.toHexString(),
-        ]
-      );
-    } else {
+   
       if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
       var cardType = getCardTypeFromID(event.params._id);
       if (cardType != null) {
@@ -123,7 +111,8 @@ export function handleTransferSingleUnofficial(
           let user_sender_cardBalance = getOrCreateCardBalance(
             event.params._from,
             cardType,
-            user_sender
+            user_sender,
+            event.block.number
           );
           if(user_sender_cardBalance.wrappedBalance.minus(
             event.params._value
@@ -134,7 +123,8 @@ export function handleTransferSingleUnofficial(
           let user_recevier_cardBalance = getOrCreateCardBalance(
             event.params._to,
             cardType,
-            user_recevier
+            user_recevier,
+            event.block.number
           );
   
           // DECREASE SENDER BALANCE WRAPPED AND save
@@ -177,7 +167,6 @@ export function handleTransferSingleUnofficial(
           ]
         );
       }
-    }
     
   }
   
@@ -189,19 +178,7 @@ export function handleTransferBatchUnofficial(
   for (var i = 0; i < arrayLength; i++) {
     var cardId = event.params._ids[i];
     var amount = event.params._values[i];
-    if (cardId == BigInt.fromI32(171)) {
-      log.info(
-        "MISPRINT TRANSFER - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
-        [
-          event.params._operator.toHexString(),
-          event.params._from.toHexString(),
-          event.params._to.toHexString(),
-          event.transaction.hash.toHexString(),
-          amount.toHexString(),
-          cardId.toHexString(),
-        ]
-      );
-    } else {
+  
       var cardType = getCardTypeFromID(cardId);
       if (cardType != null) {
       
@@ -226,7 +203,8 @@ export function handleTransferBatchUnofficial(
         let user_sender_cardBalance = getOrCreateCardBalance(
           event.params._from,
           cardType,
-          user_sender
+          user_sender,
+          event.block.number
         );
 
         // GET USER RECEIVER and USER RECEIVER CARD Balance
@@ -234,7 +212,8 @@ export function handleTransferBatchUnofficial(
         let user_recevier_cardBalance = getOrCreateCardBalance(
           event.params._to,
           cardType,
-          user_recevier
+          user_recevier,
+          event.block.number
         );
 
         // DECREASE SENDER BALANCE WRAPPED AND save
@@ -265,5 +244,5 @@ export function handleTransferBatchUnofficial(
       }
     }
   }
-}
+
 

@@ -7,7 +7,7 @@ export function handleOfficialWrap(call: WrapCall): void {
     var cardType = getCardTypeFromID(call.inputs._id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
-        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
         user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(call.inputs._quantity);
         user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(call.inputs._quantity);
@@ -32,7 +32,7 @@ export function handleOfficialUnwrap(call: UnwrapCall): void {
     var cardType = getCardTypeFromID(call.inputs._id);
     if (cardType != null) {
         let user_recevier = getOrCreateCardHolder(call.from);
-        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+        let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
         user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(call.inputs._quantity);
         user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs._quantity);
@@ -60,7 +60,7 @@ export function handleOfficialWrapBatch(call: WrapBatchCall): void {
         var cardType = getCardTypeFromID(cardId);
         if (cardType != null) {
             let user_recevier = getOrCreateCardHolder(call.from);
-            let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+            let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
       
             user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(amount);
             user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(amount);
@@ -89,7 +89,7 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
         var cardType = getCardTypeFromID(cardId);
         if (cardType != null) {
             let user_recevier = getOrCreateCardHolder(call.from);
-            let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier);
+            let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
       
             user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(amount);
             user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(amount);
@@ -168,7 +168,8 @@ export function handleTransferSingle(event: TransferSingle): void {
         let user_sender_cardBalance = getOrCreateCardBalance(
           event.params._from,
           cardType,
-          user_sender
+          user_sender,
+          event.block.number
         );
         if(user_sender_cardBalance.wrappedBalance.minus(
           event.params._value
@@ -178,7 +179,8 @@ export function handleTransferSingle(event: TransferSingle): void {
         let user_recevier_cardBalance = getOrCreateCardBalance(
           event.params._to,
           cardType,
-          user_recevier
+          user_recevier,
+          event.block.number
         );
   
         // DECREASE SENDER BALANCE WRAPPED AND save
@@ -258,7 +260,8 @@ export function handleTransferBatch(event: TransferBatch): void {
       let user_sender_cardBalance = getOrCreateCardBalance(
         event.params._from,
         cardType,
-        user_sender
+        user_sender,
+        event.block.number
       );
 
       // GET USER RECEIVER and USER RECEIVER CARD Balance
@@ -266,7 +269,8 @@ export function handleTransferBatch(event: TransferBatch): void {
       let user_recevier_cardBalance = getOrCreateCardBalance(
         event.params._to,
         cardType,
-        user_recevier
+        user_recevier,
+        event.block.number
       );
 
       // DECREASE SENDER BALANCE WRAPPED AND save

@@ -25,6 +25,31 @@ dataSources:
           handler: handleCreateCard
       file: ./src/mapping.ts
   - kind: ethereum/contract
+    name: SeventeenB
+    network: mainnet
+    source:
+      address: "0xE0B5E6F32d657e0e18d4B3E801EBC76a5959e123"
+      startBlock: 3902087
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - CardHolder
+        - CardBalance
+        - CardType
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      callHandlers: 
+        - function: transfer(address,uint256)
+          handler: handleDirectTransfer
+      file: ./src/seventeenb-mapping.ts
+  - kind: ethereum/contract
     name: ERC1155
     network: mainnet
     source:

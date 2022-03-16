@@ -177,7 +177,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123").toHex()
       );
 
-      cardType.supply = BigInt.fromI32(323);
+      cardType.supply = BigInt.fromI32(500);
       cardType.address = Address.fromString(
         "0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123"
       );

@@ -4,6 +4,7 @@ import {
   assert,
   createMockedFunction,
   describe,
+  beforeEach,
 } from "matchstick-as/assembly/index";
 import { ADDRESS_ZERO, ERC1155_ADDRESS } from "../src/constants";
 
@@ -18,9 +19,13 @@ import {
   randomSender2,
   cardBalanceId2,
   mintWrappedCardsToUser,
+  createCard,
 } from "./helper";
 
 describe("ERC1155 OFFICIAL TESTS", () => {
+  beforeEach(() => {
+    createCard(); 
+  })
   test("ERC1155 Official - Wrap Event (IGNORED)", () => {
     mintCardsToUser(randomSender1, BigInt.fromString("2"));
     // Assert the state of the store

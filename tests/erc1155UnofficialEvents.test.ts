@@ -4,6 +4,7 @@ import {
   assert,
   createMockedFunction,
   describe,
+  beforeEach,
 } from "matchstick-as/assembly/index";
 import {
   ADDRESS_ZERO,
@@ -23,10 +24,14 @@ import {
   createNewERC1155UnofficialTransferEvent,
   createNewERC20TransferEvent,
   mintWrappedCardsToUser,
+  createCard,
 } from "./helper";
 import { handleTransfer } from "../src/erc20-mapping";
 
 describe("ERC1155 UNOFFICIAL TESTS", () => {
+  beforeEach(() => {
+    createCard(); 
+  })
   test("ERC1155 Unofficial - Wrap Event (IGNORED) ", () => {
 
     mintCardsToUser(randomSender1, BigInt.fromString("2"));

@@ -116,9 +116,7 @@ export function createNewERC1155OfficialTransferEvent(
     
     return transferEvent;
   }
-
-
-export function mintCardsToUser(to: Address, amount: BigInt): void {
+export function createCard() :CardType {
   let cardType = new CardType(curioCardAddress1.toHex());
 
   cardType.supply = BigInt.fromString("1200");
@@ -128,37 +126,33 @@ export function mintCardsToUser(to: Address, amount: BigInt): void {
   cardType.name = "Curio1";
   cardType.ipfsHash = "SomeHash";
   cardType.save();
+  return cardType;
+}
 
-  ERC20Entity.create(curioCardAddress1);
-
-  let user_recevier = getOrCreateCardHolder(to);
-  let user_recevier_cardBalance = getOrCreateCardBalance(
-    to,
-    cardType,
-    user_recevier,
-    BigInt.fromI32(1)
-  );
-
-  user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
-    amount
-  );
-  user_recevier_cardBalance.save();
-  user_recevier.save();
+export function mintCardsToUser(to: Address, amount: BigInt): void {
+  let cardType = CardType.load(curioCardAddress1.toHex())
+  if(cardType != null) {
+    let user_recevier = getOrCreateCardHolder(to);
+    let user_recevier_cardBalance = getOrCreateCardBalance(
+      to,
+      cardType,
+      user_recevier,
+      BigInt.fromI32(1)
+    );
+  
+    user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+      amount
+    );
+    user_recevier_cardBalance.save();
+    user_recevier.save();
+  }
+ 
 }
 
 
 export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
-  let cardType = new CardType(curioCardAddress1.toHex());
-
-  cardType.supply = BigInt.fromString("1200");
-  cardType.address = curioCardAddress1;
-  cardType.symbol = "CURIO1";
-  cardType.description = "CurioCard1";
-  cardType.name = "Curio1";
-  cardType.ipfsHash = "SomeHash";
-  cardType.save();
-
-  ERC20Entity.create(curioCardAddress1);
+  let cardType = CardType.load(curioCardAddress1.toHex())
+  if(cardType != null) {
 
   let user_recevier = getOrCreateCardHolder(to);
   let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -173,4 +167,5 @@ export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
   );
   user_recevier_cardBalance.save();
   user_recevier.save();
+  }
 }

@@ -153,6 +153,7 @@ export function handleTransfer(event: Transfer): void {
 
 
 export function handleDirectTransfer(call: TransferCall): void {
+  if (!checkIfSentToSelf(call.inputs._to, call.from, call.from)) {
   var cardType = CardType.load(call.to.toHex());
   if (cardType != null) {
     log.info(
@@ -286,4 +287,10 @@ export function handleDirectTransfer(call: TransferCall): void {
       call.transaction.hash.toString(),
     ]);
   }
+} else{
+  log.warning("DIRECT SELF SEND - address: {}, tx: {}", [
+    call.to.toHex(),
+    call.transaction.hash.toString(),
+  ]);
+}
 }

@@ -232,6 +232,7 @@ export function handleTransferSingle(event: TransferSingle): void {
 
 
 export function handleTransferBatch(event: TransferBatch): void {
+  if (!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
   var arrayLength = event.params._ids.length;
   for (var i = 0; i < arrayLength; i++) {
     var cardId = event.params._ids[i];
@@ -300,4 +301,16 @@ export function handleTransferBatch(event: TransferBatch): void {
       );
     }
   }
+} else
+{
+  log.info(
+    "ERC1155 BATCH SELF SEND - operator: {} from: {} to: {} txhash: {}",
+    [
+      event.params._operator.toHexString(),
+      event.params._from.toHexString(),
+      event.params._to.toHexString(),
+      event.transaction.hash.toHexString()
+    ]
+  );
+}
 }

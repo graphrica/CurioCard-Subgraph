@@ -171,9 +171,9 @@ export function handleTransferSingle(event: TransferSingle): void {
           user_sender,
           event.block.number
         );
-        if(user_sender_cardBalance.wrappedBalance.minus(
-          event.params._value
-        ) >= BigInt.fromI32(0)){
+        // if(user_sender_cardBalance.wrappedBalance.minus(
+        //   event.params._value
+        // ) >= BigInt.fromI32(0)){
         // GET USER RECEIVER and USER RECEIVER CARD Balance
         let user_recevier = getOrCreateCardHolder(event.params._to);
         let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -207,7 +207,7 @@ export function handleTransferSingle(event: TransferSingle): void {
             event.params._id.toHexString(),
           ]
         );
-      }
+      // }
       clearEmptyCardBalance(user_sender_cardBalance);
       
     } }

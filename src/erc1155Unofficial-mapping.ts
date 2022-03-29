@@ -114,9 +114,9 @@ export function handleTransferSingleUnofficial(
             user_sender,
             event.block.number
           );
-          if(user_sender_cardBalance.wrappedBalance.minus(
-            event.params._value
-          ) >= BigInt.fromI32(0)){
+          // if(user_sender_cardBalance.wrappedBalance.minus(
+          //   event.params._value
+          // ) >= BigInt.fromI32(0)){
   
           // GET USER RECEIVER and USER RECEIVER CARD Balance
           let user_recevier = getOrCreateCardHolder(event.params._to);
@@ -151,9 +151,10 @@ export function handleTransferSingleUnofficial(
               event.params._id.toHexString(),
             ]
           );
-        }
+        // }
         clearEmptyCardBalance(user_sender_cardBalance);
-      }}}
+      }
+    }}
       else{
         log.info(
           "ERC1155 UNOFFICAL SELF SEND - operator: {} from: {} to: {} txhash: {} value: {} id: {}",

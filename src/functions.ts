@@ -1,7 +1,7 @@
 import { Address, BigInt, store } from "@graphprotocol/graph-ts";
-import { ERC1155 as ERC1155Official} from "../generated/ERC1155/ERC1155";
+import {  ERC1155 as ERC1155Official} from "../generated/ERC1155/ERC1155";
 import { CardBalance, CardHolder, CardType } from "../generated/schema";
-import { ADDRESS_ZERO } from "./constants";
+import { ADDRESS_ZERO, ERC1155Unofficial_ADDRESS } from "./constants";
 
 // ERC1155 mapping
 export function clearEmptyCardBalance(cardBalance: CardBalance): void {
@@ -85,9 +85,12 @@ export function getCardTypeFromID(
     address = Address.fromString("0xd3540bcd9c2819771f9d765edc189cbd915feabd");
   } else if(id == BigInt.fromString("30")){
     address = Address.fromString("0x7f5b230dc580d1e67df6ed30dee82684dd113d1f");
-  } else if(id == BigInt.fromString("171")){
+  } else if(id == BigInt.fromString("172")){
+    address = Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123");
+  } else if(id == BigInt.fromString("171")){ // Just in case because we saw one with it at one point in time - James & Kent
     address = Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123");
   }
+  
 
   if(address == ADDRESS_ZERO)
     return null;

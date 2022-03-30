@@ -1,6 +1,5 @@
 import { log, BigInt, Address } from "@graphprotocol/graph-ts";
 import {
-  ERC20,
   Transfer,
   TransferCall,
 } from "../generated/templates/ERC20/ERC20";

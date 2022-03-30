@@ -239,9 +239,6 @@ export function handleDirectTransfer(call: TransferCall): void {
         user_sender,
         call.block.number
       );
-      // if(user_sender_cardBalance.unwrappedBalance.minus(
-      //   call.inputs._value
-      // ) >= BigInt.fromI32(0)){
       // GET USER RECEIVER and USER RECEIVER CARD Balance
       let user_recevier = getOrCreateCardHolder(call.inputs._to);
       let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -250,9 +247,6 @@ export function handleDirectTransfer(call: TransferCall): void {
         user_recevier,
         call.block.number
       );
-
-      
-
       
       // DECREASE SENDER BALANCE UNWRAPPED AND save
       user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
@@ -279,7 +273,6 @@ export function handleDirectTransfer(call: TransferCall): void {
           call.transaction.hash.toHexString(),
         ]
       );
-    // }
     }
   } else {
     log.warning("CARD NOT FOUND - address: {}, tx: {}", [

@@ -1,6 +1,6 @@
 import { WrapCall, UnwrapCall, TransferBatch } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { ERC1155_ADDRESS, ADDRESS_ZERO, OPENSEA_V1 } from "./constants";
+import { log } from "@graphprotocol/graph-ts";
+import { ADDRESS_ZERO, OPENSEA_V1 } from "./constants";
 import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance, checkIfSentToSelf } from "./functions";
 import {
     TransferSingle
@@ -114,9 +114,6 @@ export function handleTransferSingleUnofficial(
             user_sender,
             event.block.number
           );
-          // if(user_sender_cardBalance.wrappedBalance.minus(
-          //   event.params._value
-          // ) >= BigInt.fromI32(0)){
   
           // GET USER RECEIVER and USER RECEIVER CARD Balance
           let user_recevier = getOrCreateCardHolder(event.params._to);
@@ -151,7 +148,6 @@ export function handleTransferSingleUnofficial(
               event.params._id.toHexString(),
             ]
           );
-        // }
         clearEmptyCardBalance(user_sender_cardBalance);
       }
     }}

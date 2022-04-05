@@ -14,6 +14,6 @@
   "dependencies": {
     "@graphprotocol/graph-cli": "0.27.0",
     "@graphprotocol/graph-ts": "0.24.1",
-    "matchstick-as": "https://github.com/LimeChain/matchstick-as#3b8880622229d3bbb93c01b8cc8bc6aaf9c079b4"
+    "matchstick-as": "https://github.com/LimeChain/matchstick-as#tests_ux_improvements"
   }
 }

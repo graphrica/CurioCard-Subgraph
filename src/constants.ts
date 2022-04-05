@@ -10,6 +10,8 @@ export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6
 export const ZERO_X_EXCHANGE = Address.fromString("0x61935cbdd02287b511119ddb11aeb42f1593b7ef");
 export const CARD_FACTORY = Address.fromString("0x37aab22019448859fc255e6e353a1baf2c05e6bb");
 export const CARD_FACTORY2 = Address.fromString("0xeca65be784e2b0f1956d266c1237481a511a19fb");
+export const PERMAWRAPPER = Address.fromString("0x77f84c36e451496d7f489efd16e9753fc2c8f0df");
+
 
 // let myMap = new Map<string, string>([
 //   ["key1", "value1"],

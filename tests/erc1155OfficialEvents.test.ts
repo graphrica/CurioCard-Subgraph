@@ -26,52 +26,56 @@ describe("ERC1155 OFFICIAL TESTS", () => {
   beforeEach(() => {
     createCard(); 
   })
-  test("ERC1155 Official - Wrap Event (IGNORED)", () => {
-    mintCardsToUser(randomSender1, BigInt.fromString("2"));
-    // Assert the state of the store
-    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
-    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
-    var wrap = createNewERC1155OfficialTransferEvent(
-      ADDRESS_ZERO,
-      randomSender1,
-      randomSender1,
-      BigInt.fromString("1"),
-      BigInt.fromString("2")
-    );
 
-    // Call mappings
-    handleTransferSingle(wrap);
-
-    // Assert the state of the store
-    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "0");
-    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "2");
-
-    // Clear the store before the next test (optional)
-    clearStore();
-  });
-
-  test("ERC1155 Official - Unwrap Event (IGNORED)", () => {
-    mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
-
-    // Assert the state of the store
-    var unwrap = createNewERC1155OfficialTransferEvent(
-      ERC1155_ADDRESS,
-      ADDRESS_ZERO,
-      randomSender1,
-      BigInt.fromString("1"),
-      BigInt.fromString("2")
-    );
-
-    // Call mappings/ I call the contracts function inside this handler with the same ID put into the event.
-    handleTransferSingle(unwrap); // I call the contracts function inside this handler with the same ID put into the event.
-
-    // Assert the state of the store
-    assert.fieldEquals("CardBalance", cardBalanceId, "wrappedBalance", "2");
-    assert.fieldEquals("CardBalance", cardBalanceId, "unwrappedBalance", "0");
-
-    // Clear the store before the next test (optional)
-    clearStore();
-  });
+  describe("Non-State Changing", ()=>{
+    test("ERC1155 Official - Wrap Event (IGNORED)", () => {
+      mintCardsToUser(randomSender1, BigInt.fromString("2"));
+      // Assert the state of the store
+      assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
+      assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
+      var wrap = createNewERC1155OfficialTransferEvent(
+        ADDRESS_ZERO,
+        randomSender1,
+        randomSender1,
+        BigInt.fromString("1"),
+        BigInt.fromString("2")
+      );
+  
+      // Call mappings
+      handleTransferSingle(wrap);
+  
+      // Assert the state of the store
+      assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
+      assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
+  
+      // Clear the store before the next test (optional)
+      clearStore();
+    });
+  
+    test("ERC1155 Official - Unwrap Event (IGNORED)", () => {
+      mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
+  
+      // Assert the state of the store
+      var unwrap = createNewERC1155OfficialTransferEvent(
+        ERC1155_ADDRESS,
+        ADDRESS_ZERO,
+        randomSender1,
+        BigInt.fromString("1"),
+        BigInt.fromString("2")
+      );
+  
+      // Call mappings/ I call the contracts function inside this handler with the same ID put into the event.
+      handleTransferSingle(unwrap); // I call the contracts function inside this handler with the same ID put into the event.
+  
+      // Assert the state of the store
+      assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "2");
+      assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "0");
+  
+      // Clear the store before the next test (optional)
+      clearStore();
+    });
+  })
+  
 
   test("ERC1155 Official - Transfer", () => {
     mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
@@ -90,8 +94,8 @@ describe("ERC1155 OFFICIAL TESTS", () => {
 
     // Assert the state of the store
     assert.notInStore("CardBalance", cardBalanceId);
-    assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedBalance", "2");
-    assert.fieldEquals("CardBalance", cardBalanceId2, "unwrappedBalance", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedOfficial", "2");
+    assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "0");
 
     // Clear the store before the next test (optional)
     clearStore();

@@ -16,6 +16,7 @@ import {
   ADDRESS_ZERO,
   ZERO_X_EXCHANGE,
   CARD_FACTORY2,
+  PERMAWRAPPER,
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
@@ -82,6 +83,9 @@ export function handleTransfer(event: Transfer): void {
       //CREATE A CARD BALANCE USER
       //CREATE A CARD BALANCE for CARDTYPE
       let user_recevier = getOrCreateCardHolder(event.params.to);
+      if(event.params.to == PERMAWRAPPER){
+        user_recevier = getOrCreateCardHolder(ADDRESS_ZERO);
+      }
       let user_recevier_cardBalance = getOrCreateCardBalance(
         event.params.to,
         cardType,
@@ -89,7 +93,7 @@ export function handleTransfer(event: Transfer): void {
         event.block.number
       );
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+      user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(
         event.params.value
       );
       user_recevier_cardBalance.save();
@@ -132,14 +136,14 @@ export function handleTransfer(event: Transfer): void {
       );
 
       // DECREASE SENDER BALANCE UNWRAPPED AND save
-      user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
+      user_sender_cardBalance.unwrapped = user_sender_cardBalance.unwrapped.minus(
         event.params.value
       );
       user_sender_cardBalance.save();
 
       user_sender.save();
       // INCREASE RECEIVER BALANCE UNWRAPPED AND save
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+      user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(
         event.params.value
       );
       user_recevier_cardBalance.save();
@@ -233,6 +237,11 @@ export function handleDirectTransfer(call: TransferCall): void {
       call.from == CARD_FACTORY2
     ) {
       let user_recevier = getOrCreateCardHolder(call.inputs._to);
+      if(call.to == PERMAWRAPPER ||
+        call.transaction.to == PERMAWRAPPER){
+          user_recevier = getOrCreateCardHolder(ADDRESS_ZERO);
+        }
+      
       let user_recevier_cardBalance = getOrCreateCardBalance(
         call.inputs._to,
         cardType,
@@ -240,7 +249,7 @@ export function handleDirectTransfer(call: TransferCall): void {
         call.block.number
       );
 
-      user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+      user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(
         call.inputs._value
       );
       user_recevier_cardBalance.save();
@@ -285,14 +294,14 @@ export function handleDirectTransfer(call: TransferCall): void {
         );
 
         // DECREASE SENDER BALANCE UNWRAPPED AND save
-        user_sender_cardBalance.unwrappedBalance = user_sender_cardBalance.unwrappedBalance.minus(
+        user_sender_cardBalance.unwrapped = user_sender_cardBalance.unwrapped.minus(
           call.inputs._value
         );
         user_sender_cardBalance.save();
 
         user_sender.save();
         // INCREASE RECEIVER BALANCE UNWRAPPED AND save
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+        user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(
           call.inputs._value
         );
         user_recevier_cardBalance.save();

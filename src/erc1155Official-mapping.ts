@@ -9,8 +9,8 @@ export function handleOfficialWrap(call: WrapCall): void {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(call.inputs._quantity);
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(call.inputs._quantity);
+        user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.minus(call.inputs._quantity);
+        user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.plus(call.inputs._quantity);
         user_recevier_cardBalance.save();
         user_recevier.save()
         log.info(
@@ -34,8 +34,8 @@ export function handleOfficialUnwrap(call: UnwrapCall): void {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(call.inputs._quantity);
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs._quantity);
+        user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.minus(call.inputs._quantity);
+        user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(call.inputs._quantity);
         user_recevier_cardBalance.save();
         user_recevier.save()
         log.info(
@@ -62,8 +62,8 @@ export function handleOfficialWrapBatch(call: WrapBatchCall): void {
             let user_recevier = getOrCreateCardHolder(call.from);
             let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
       
-            user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(amount);
-            user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(amount);
+            user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.minus(amount);
+            user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.plus(amount);
             user_recevier_cardBalance.save();
             user_recevier.save()
             log.info(
@@ -91,8 +91,8 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
             let user_recevier = getOrCreateCardHolder(call.from);
             let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
       
-            user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(amount);
-            user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(amount);
+            user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.minus(amount);
+            user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(amount);
             user_recevier_cardBalance.save();
             user_recevier.save()
             log.info(
@@ -182,13 +182,13 @@ export function handleTransferSingle(event: TransferSingle): void {
         );
   
         // DECREASE SENDER BALANCE WRAPPED AND save
-        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+        user_sender_cardBalance.wrappedOfficial = user_sender_cardBalance.wrappedOfficial.minus(
           event.params._value
         );
         user_sender_cardBalance.save();
         user_sender.save();
         // INCREASE RECEIVER BALANCE WRAPPED AND save
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+        user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.plus(
           event.params._value
         );
         user_recevier_cardBalance.save();
@@ -273,14 +273,14 @@ export function handleTransferBatch(event: TransferBatch): void {
       );
 
       // DECREASE SENDER BALANCE WRAPPED AND save
-      user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+      user_sender_cardBalance.wrappedOfficial = user_sender_cardBalance.wrappedOfficial.minus(
         amount
       );
       user_sender_cardBalance.save();
       user_sender.save();
 
       // INCREASE RECEIVER BALANCE WRAPPED AND save
-      user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+      user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.plus(
         amount
       );
       user_recevier_cardBalance.save();

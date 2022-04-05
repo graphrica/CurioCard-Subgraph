@@ -6,8 +6,9 @@ import { ADDRESS_ZERO, ERC1155Unofficial_ADDRESS } from "./constants";
 // ERC1155 mapping
 export function clearEmptyCardBalance(cardBalance: CardBalance): void {
   if (
-    cardBalance.unwrappedBalance == BigInt.zero() &&
-    cardBalance.wrappedBalance == BigInt.zero()
+    cardBalance.unwrapped == BigInt.zero() &&
+    cardBalance.wrappedOfficial == BigInt.zero() &&
+    cardBalance.wrappedUnofficial == BigInt.zero()
   ) {
     store.remove("CardBalance", cardBalance.id);
   }
@@ -126,8 +127,9 @@ export function getOrCreateCardBalance(
   if (cardBalance == null) {
     cardBalance = new CardBalance(cardBalanceID);
     cardBalance.type = cardType.id;
-    cardBalance.unwrappedBalance = BigInt.fromI32(0);
-    cardBalance.wrappedBalance = BigInt.fromI32(0);
+    cardBalance.unwrapped = BigInt.fromI32(0);
+    cardBalance.wrappedOfficial = BigInt.fromI32(0);
+    cardBalance.wrappedUnofficial = BigInt.fromI32(0);
     cardBalance.user = cardHolder.id;
     cardBalance.blockNumber = blockNumber;
     cardBalance.save();

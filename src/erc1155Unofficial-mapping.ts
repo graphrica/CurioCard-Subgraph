@@ -12,8 +12,8 @@ export function handleUnofficialWrap(call: WrapCall): void {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.minus(call.inputs.amount);
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(call.inputs.amount);
+        user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.minus(call.inputs.amount);
+        user_recevier_cardBalance.wrappedUnofficial = user_recevier_cardBalance.wrappedUnofficial.plus(call.inputs.amount);
         user_recevier_cardBalance.save();
         user_recevier.save()
         log.info(
@@ -35,8 +35,8 @@ export function handleUnofficialUnwrap(call: UnwrapCall): void {
         let user_recevier = getOrCreateCardHolder(call.from);
         let user_recevier_cardBalance = getOrCreateCardBalance(call.from, cardType, user_recevier, call.block.number);
   
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.minus(call.inputs.amount);
-        user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(call.inputs.amount);
+        user_recevier_cardBalance.wrappedUnofficial = user_recevier_cardBalance.wrappedUnofficial.minus(call.inputs.amount);
+        user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(call.inputs.amount);
         user_recevier_cardBalance.save();
         user_recevier.save()
         log.info(
@@ -125,13 +125,13 @@ export function handleTransferSingleUnofficial(
           );
   
           // DECREASE SENDER BALANCE WRAPPED AND save
-          user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+          user_sender_cardBalance.wrappedUnofficial = user_sender_cardBalance.wrappedUnofficial.minus(
             event.params._value
           );
           user_sender_cardBalance.save();
           user_sender.save();
           // INCREASE RECEIVER BALANCE WRAPPED AND save
-          user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+          user_recevier_cardBalance.wrappedUnofficial = user_recevier_cardBalance.wrappedUnofficial.plus(
             event.params._value
           );
           user_recevier_cardBalance.save();
@@ -215,14 +215,14 @@ export function handleTransferBatchUnofficial(
         );
 
         // DECREASE SENDER BALANCE WRAPPED AND save
-        user_sender_cardBalance.wrappedBalance = user_sender_cardBalance.wrappedBalance.minus(
+        user_sender_cardBalance.wrappedUnofficial = user_sender_cardBalance.wrappedUnofficial.minus(
           amount
         );
         user_sender_cardBalance.save();
         user_sender.save();
 
         // INCREASE RECEIVER BALANCE WRAPPED AND save
-        user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+        user_recevier_cardBalance.wrappedUnofficial = user_recevier_cardBalance.wrappedUnofficial.plus(
           amount
         );
         user_recevier_cardBalance.save();

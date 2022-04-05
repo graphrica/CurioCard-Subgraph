@@ -13,8 +13,9 @@ type CardType @entity {
 type CardBalance @entity {
     id: ID!
     type: CardType!
-    wrappedBalance: BigInt!
-    unwrappedBalance: BigInt!
+    unwrapped: BigInt!
+    wrappedUnofficial: BigInt!
+    wrappedOfficial: BigInt!
     user: CardHolder! 
     blockNumber: BigInt!
 }

@@ -6,9 +6,9 @@ import {
   describe,
   beforeEach,
 } from "matchstick-as/assembly/index";
-import { ADDRESS_ZERO, ERC1155_ADDRESS } from "../src/constants";
+import { ADDRESS_ZERO, ERC1155_ADDRESS } from "../../src/constants";
 
-import { handleTransferSingle } from "../src/erc1155Official-mapping";
+import { handleTransferSingle } from "../../src/erc1155Official-mapping";
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
   mintCardsToUser,
@@ -20,14 +20,16 @@ import {
   cardBalanceId2,
   mintWrappedCardsToUser,
   createCard,
-} from "./helper";
+} from "../helper";
+import { afterEach, beforeAll } from "matchstick-as";
 
 describe("ERC1155 OFFICIAL TESTS", () => {
-  beforeEach(() => {
+  beforeAll(() => {
     createCard(); 
   })
 
   describe("Non-State Changing", ()=>{
+   
     test("ERC1155 Official - Wrap Event (IGNORED)", () => {
       mintCardsToUser(randomSender1, BigInt.fromString("2"));
       // Assert the state of the store
@@ -43,16 +45,17 @@ describe("ERC1155 OFFICIAL TESTS", () => {
   
       // Call mappings
       handleTransferSingle(wrap);
+
   
       // Assert the state of the store
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
   
-    test("ERC1155 Official - Unwrap Event (IGNORED)", () => {
+    test("ERC1155 Official - Unwrap Event (IGNORED)", () => {   
+      createCard(); 
       mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
   
       // Assert the state of the store
@@ -72,12 +75,17 @@ describe("ERC1155 OFFICIAL TESTS", () => {
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "0");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
+    afterEach(() => {
+      clearStore(); 
+  
+  
+    })
   })
   
-
+ 
   test("ERC1155 Official - Transfer", () => {
+    createCard(); 
     mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
 
     // Assert the state of the store
@@ -98,6 +106,11 @@ describe("ERC1155 OFFICIAL TESTS", () => {
     assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "0");
 
     // Clear the store before the next test (optional)
-    clearStore();
+
   });
+  afterEach(() => {
+    clearStore(); 
+
+
+  })
 });

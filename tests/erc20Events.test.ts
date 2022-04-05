@@ -17,17 +17,19 @@ import {
   randomSender1,
   randomSender2,
 } from "./helper";
+import { afterEach } from "matchstick-as";
 
 describe("ERC20 Transfer Event Tests", () => {
-  beforeEach(() => {
-    createCard(); 
-    mintCardsToUser(randomSender1, BigInt.fromString("2"));
-  })
+
   
   describe("Non-state changing", ()=> {
-    
+    beforeEach(() => {
+      createCard(); 
+      mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    })
     test("ERC20 - Wrap Event Official ERC1155 (IGNORED)", () => {
   
+
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
@@ -46,7 +48,6 @@ describe("ERC20 Transfer Event Tests", () => {
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
   
     test("ERC20 - Unwrap Event Official ERC1155 (Ignored)", () => {
@@ -68,7 +69,6 @@ describe("ERC20 Transfer Event Tests", () => {
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
   
     test("ERC20 - Unwrap Event Unofficial ERC1155 (Ignored)", () => {
@@ -91,7 +91,6 @@ describe("ERC20 Transfer Event Tests", () => {
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
   
     test("ERC20 Transfer - Wrap Event Unofficial ERC1155 (Ignored)", () => {
@@ -113,11 +112,17 @@ describe("ERC20 Transfer Event Tests", () => {
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
       // Clear the store before the next test (optional)
-      clearStore();
     });
+    afterEach(() => {
+      clearStore(); 
+    })
   })
   
 describe("State changing", () => {
+  beforeEach(() => {
+    createCard(); 
+    mintCardsToUser(randomSender1, BigInt.fromString("2"));
+  })
   test("ERC20 Transfer - Transfer of ERC20", () => {
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
@@ -139,8 +144,10 @@ describe("State changing", () => {
     assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedUnofficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "2");
     // Clear the store before the next test (optional)
-    clearStore();
   });
+  afterEach(() => {
+    clearStore(); 
+  })
 })
   
 });

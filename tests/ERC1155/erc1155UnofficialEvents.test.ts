@@ -5,14 +5,15 @@ import {
   createMockedFunction,
   describe,
   beforeEach,
+  afterAll,
 } from "matchstick-as/assembly/index";
 import {
   ADDRESS_ZERO,
   ERC1155Unofficial_ADDRESS,
   ERC1155_ADDRESS,
-} from "../src/constants";
+} from "../../src/constants";
 
-import { handleTransferSingleUnofficial } from "../src/erc1155Unofficial-mapping";
+import { handleTransferSingleUnofficial } from "../../src/erc1155Unofficial-mapping";
 import { BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
   mintCardsToUser,
@@ -26,8 +27,8 @@ import {
   mintWrappedCardsToUser,
   createCard,
   mintUnofficialWrappedCardsToUser,
-} from "./helper";
-import { handleTransfer } from "../src/erc20-mapping";
+} from "../helper";
+import { handleTransfer } from "../../src/erc20-mapping";
 
 describe("ERC1155 UNOFFICIAL TESTS", () => {
   beforeEach(() => {
@@ -131,6 +132,10 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
     assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "0");
 
     // Clear the store before the next test (optional)
-    clearStore();
+   
   });
+
+  afterAll(() => {
+    clearStore();
+  })
 });

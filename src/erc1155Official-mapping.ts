@@ -113,7 +113,7 @@ export function handleOfficialUnwrapBatch(call: UnwrapBatchCall): void {
 
 export function handleTransferSingle(event: TransferSingle): void {
     var cardType = getCardTypeFromID(event.params._id);
-    if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
+    if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator) && event.params._value > BigInt.fromI32(0)) {
   
     if (cardType != null) {
       if (
@@ -235,7 +235,7 @@ export function handleTransferBatch(event: TransferBatch): void {
   for (var i = 0; i < arrayLength; i++) {
     var cardId = event.params._ids[i];
     var amount = event.params._values[i];
-
+    if(amount > BigInt.fromI32(0)) {
     if (event.params._operator == OPENSEA_V1) {
       log.info(
         "OPENSEA V1 BATCH - operator: {} from: {} to: {} txhash: {} value: {} id: {}",
@@ -298,6 +298,7 @@ export function handleTransferBatch(event: TransferBatch): void {
         ]
       );
     }
+  }
   }
 } else
 {

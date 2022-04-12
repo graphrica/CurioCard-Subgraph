@@ -20,8 +20,8 @@ import {
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
-  if (
-    !checkIfSentToSelf(event.params.to, event.params.from, event.params.from)
+  if (!checkIfSentToSelf(event.params.to, event.params.from, event.params.from) && 
+      event.params.value > BigInt.fromI32(0)
   ) {
     let cardType = CardType.load(event.address.toHex());
     if (cardType == null) {
@@ -173,7 +173,7 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleDirectTransfer(call: TransferCall): void {
-  if (!checkIfSentToSelf(call.inputs._to, call.from, call.from)) {
+  if (!checkIfSentToSelf(call.inputs._to, call.from, call.from) && call.inputs._value > BigInt.fromI32(0)) {
     let cardType = CardType.load(call.to.toHex());
     if (cardType == null) {
       cardType = new CardType(

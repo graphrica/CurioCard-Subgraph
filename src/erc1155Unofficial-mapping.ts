@@ -1,5 +1,5 @@
 import { WrapCall, UnwrapCall, TransferBatch } from "../generated/ERC1155Unofficial/ERC1155Unofficial";
-import { log } from "@graphprotocol/graph-ts";
+import { log, BigInt } from "@graphprotocol/graph-ts";
 import { ADDRESS_ZERO, OPENSEA_V1 } from "./constants";
 import { getCardTypeFromID, getOrCreateCardHolder, getOrCreateCardBalance, clearEmptyCardBalance, checkIfSentToSelf } from "./functions";
 import {
@@ -57,7 +57,7 @@ export function handleTransferSingleUnofficial(
     event: TransferSingle
   ): void {
    
-      if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator)) {
+      if(!checkIfSentToSelf(event.params._to, event.params._from, event.params._operator) && event.params._value > BigInt.fromI32(0)) {
       var cardType = getCardTypeFromID(event.params._id);
       if (cardType != null) {
         if (event.params._operator == ADDRESS_ZERO) {
@@ -176,7 +176,7 @@ export function handleTransferBatchUnofficial(
   for (var i = 0; i < arrayLength; i++) {
     var cardId = event.params._ids[i];
     var amount = event.params._values[i];
-  
+    if(amount > BigInt.fromI32(0)) {
       var cardType = getCardTypeFromID(cardId);
       if (cardType != null) {
       
@@ -241,6 +241,7 @@ export function handleTransferBatchUnofficial(
         );
       }
     }
+  }
   }
   else {
     log.info(

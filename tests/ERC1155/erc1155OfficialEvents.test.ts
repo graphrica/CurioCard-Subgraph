@@ -24,12 +24,12 @@ import {
 import { afterEach, beforeAll } from "matchstick-as";
 
 describe("ERC1155 OFFICIAL TESTS", () => {
-  beforeAll(() => {
-    createCard(); 
-  })
+ 
 
   describe("Non-State Changing", ()=>{
-   
+    beforeEach(() => {
+      createCard(); 
+    })
     test("ERC1155 Official - Wrap Event (IGNORED)", () => {
       mintCardsToUser(randomSender1, BigInt.fromString("2"));
       // Assert the state of the store
@@ -55,7 +55,6 @@ describe("ERC1155 OFFICIAL TESTS", () => {
     });
   
     test("ERC1155 Official - Unwrap Event (IGNORED)", () => {   
-      createCard(); 
       mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
   
       // Assert the state of the store
@@ -76,16 +75,12 @@ describe("ERC1155 OFFICIAL TESTS", () => {
   
       // Clear the store before the next test (optional)
     });
-    afterEach(() => {
-      clearStore(); 
-  
-  
-    })
-  })
-  
- 
+
+
   test("ERC1155 Official - Transfer", () => {
-    createCard(); 
+
+ 
+
     mintWrappedCardsToUser(randomSender1, BigInt.fromString("2"));
 
     // Assert the state of the store
@@ -108,9 +103,12 @@ describe("ERC1155 OFFICIAL TESTS", () => {
     // Clear the store before the next test (optional)
 
   });
-  afterEach(() => {
-    clearStore(); 
-
-
+    afterEach(() => {
+      clearStore(); 
+  
+  
+    })
   })
+  
+ 
 });

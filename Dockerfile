@@ -1,6 +1,5 @@
-FROM ubuntu:20.04
+FROM --platform=linux/x86_64 ubuntu:20.04
 
-ARG BUILDPLATFORM=linux/x86_64
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV ARGS=""
@@ -8,16 +7,12 @@ ENV ARGS=""
 RUN apt update \
   && apt install -y sudo curl postgresql \
   && curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash - \
-  && sudo apt install -y nodejs \
-  && curl -OL https://github.com/LimeChain/matchstick/releases/download/0.5.0-alpha4/binary-linux-20 \
+  && sudo apt install -y nodejs
+
+RUN curl -OL https://github.com/LimeChain/matchstick/releases/download/0.5.0-rc3/binary-linux-20 \
   && chmod a+x binary-linux-20
 
 RUN mkdir matchstick
 WORKDIR /matchstick
-
-COPY ../ .
-
-RUN npm run codegen
-RUN npm run build
 
 CMD ../binary-linux-20 ${ARGS}

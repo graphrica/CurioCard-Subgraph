@@ -140,7 +140,7 @@ export function mintCardsToUser(to: Address, amount: BigInt): void {
       BigInt.fromI32(1)
     );
   
-    user_recevier_cardBalance.unwrappedBalance = user_recevier_cardBalance.unwrappedBalance.plus(
+    user_recevier_cardBalance.unwrapped = user_recevier_cardBalance.unwrapped.plus(
       amount
     );
     user_recevier_cardBalance.save();
@@ -162,10 +162,32 @@ export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
     BigInt.fromI32(1)
   );
 
-  user_recevier_cardBalance.wrappedBalance = user_recevier_cardBalance.wrappedBalance.plus(
+  user_recevier_cardBalance.wrappedOfficial = user_recevier_cardBalance.wrappedOfficial.plus(
     amount
   );
   user_recevier_cardBalance.save();
   user_recevier.save();
   }
 }
+
+
+export function mintUnofficialWrappedCardsToUser(to: Address, amount: BigInt): void {
+  let cardType = CardType.load(curioCardAddress1.toHex())
+  if(cardType != null) {
+
+  let user_recevier = getOrCreateCardHolder(to);
+  let user_recevier_cardBalance = getOrCreateCardBalance(
+    to,
+    cardType,
+    user_recevier,
+    BigInt.fromI32(1)
+  );
+
+  user_recevier_cardBalance.wrappedUnofficial = user_recevier_cardBalance.wrappedUnofficial.plus(
+    amount
+  );
+  user_recevier_cardBalance.save();
+  user_recevier.save();
+  }
+}
+

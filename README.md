@@ -4,7 +4,7 @@ A decentralized API that tracks Cards, CardBalances and Accounts.
 
 Live Version - https://thegraph.com/explorer/subgraph?id=JBnWrv9pvBvSi2pUZzba3VweGBTde6s44QvsDABP47Gt&view=Overview
 
-Built by Graphrica for the CurioCards Community!
+Built with 💙 by Graphrica for the CurioCards Community!
 
 💙 Honorable mentions - @crypt0biwan, @fafrd 💙
 

@@ -6,7 +6,7 @@ Live Version - https://thegraph.com/explorer/subgraph?id=JBnWrv9pvBvSi2pUZzba3Vw
 
 Built by Graphrica for the CurioCards Community!
 
-💙 Honorable mentions - crypt0biwan, fafrd 💙
+💙 Honorable mentions - @crypt0biwan, @fafrd 💙
 
 Forked from https://github.com/fafrd/curio-cards-subgraph 
 

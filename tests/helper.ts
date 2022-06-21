@@ -45,7 +45,8 @@ export function createNewERC20TransferEvent(
     mockEvent.logType,
     mockEvent.block,
     mockEvent.transaction,
-    [fromParam, toParam, valueParam]
+    [fromParam, toParam, valueParam],
+    mockEvent.receipt
   );
 
   return transferEvent;
@@ -77,7 +78,8 @@ export function createNewERC1155OfficialTransferEvent(
       mockEvent.logType,
       mockEvent.block,
       mockEvent.transaction,
-      [operatorParam, fromParam, toParam,idParam, valueParam ]
+      [operatorParam, fromParam, toParam,idParam, valueParam ],
+      mockEvent.receipt
     );
   
     
@@ -110,7 +112,8 @@ export function createNewERC1155OfficialTransferEvent(
       mockEvent.logType,
       mockEvent.block,
       mockEvent.transaction,
-      [operatorParam, fromParam, toParam,idParam, valueParam ]
+      [operatorParam, fromParam, toParam,idParam, valueParam ],
+      mockEvent.receipt
     );
   
     

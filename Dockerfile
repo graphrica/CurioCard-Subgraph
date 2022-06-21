@@ -9,7 +9,7 @@ RUN apt update \
   && curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash - \
   && sudo apt install -y nodejs
 
-RUN curl -OL https://github.com/LimeChain/matchstick/releases/download/0.5.0-rc3/binary-linux-20 \
+RUN curl -OL https://github.com/LimeChain/matchstick/releases/download/0.5.1-pre/binary-linux-20 \
   && chmod a+x binary-linux-20
 
 RUN mkdir matchstick

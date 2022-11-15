@@ -17,6 +17,7 @@ import {
   ZERO_X_EXCHANGE,
   CARD_FACTORY2,
   PERMAWRAPPER,
+  SEVENTEENB_WRAPPER_ADDRESS,
 } from "./constants";
 
 export function handleTransfer(event: Transfer): void {
@@ -58,6 +59,16 @@ export function handleTransfer(event: Transfer): void {
     } else if (event.params.to == ERC1155Unofficial_ADDRESS) {
       log.info(
         "ERC20 WRAPPING & MINT OF ERC1155 UNOFFICIAL (IGNORED) - event.address: {} from: {} to: {} txhash: {}",
+        [
+          event.address.toHexString(),
+          event.params.from.toHexString(),
+          event.params.to.toHexString(),
+          event.transaction.hash.toHexString(),
+        ]
+      );
+    } else if (event.params.to == SEVENTEENB_WRAPPER_ADDRESS) {
+      log.info(
+        "17bWrapper WRAP EVENT (IGNORED) - event.address: {} from: {} to: {} txhash: {}",
         [
           event.address.toHexString(),
           event.params.from.toHexString(),
@@ -213,6 +224,13 @@ export function handleDirectTransfer(call: TransferCall): void {
       ]);
     } else if (call.to == ERC1155Unofficial_ADDRESS) {
       log.info("IGNORE UNOFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
+        call.transaction.from.toHexString(),
+        call.from.toHexString(),
+        call.to.toHexString(),
+      ]);
+    } else if (call.from == SEVENTEENB_WRAPPER_ADDRESS ||
+      call.transaction.from == SEVENTEENB_WRAPPER_ADDRESS ) {
+      log.info("IGNORE OFFICIAL UNWRAP 17b - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
         call.from.toHexString(),
         call.to.toHexString(),

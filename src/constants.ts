@@ -4,6 +4,7 @@ import { Address } from "@graphprotocol/graph-ts";
 export const ADDRESS_ZERO = Address.fromString("0x0000000000000000000000000000000000000000");
 export const CREATOR_ADDRESS = Address.fromString("0x3cc44273a97e8fbfbcbd3d60200cc9fd33d84d66");
 export const ERC1155_ADDRESS = Address.fromString("0x73da73ef3a6982109c4d5bdb0db9dd3e3783f313");
+export const SEVENTEENB_WRAPPER_ADDRESS = Address.fromString("0x04afa589e2b933f9463c5639f412b183ec062505");
 export const ERC1155Unofficial_ADDRESS = Address.fromString("0x3c2754c0CDc5499df1a50D608D8985070Bf87b30");
 export const ERC1155_DEPLOYER = Address.fromString("0x53f46bfbecb075b4feb3bce6828b9095e630d371");
 export const OPENSEA_V1 = Address.fromString("0x7be8076f4ea4a4ad08075c2508e481d6c946d12b");

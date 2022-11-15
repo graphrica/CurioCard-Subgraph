@@ -36,7 +36,7 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
   })
   test("ERC1155 Unofficial - Wrap Event (IGNORED) ", () => {
 
-    mintCardsToUser(randomSender1, BigInt.fromString("2"));
+    mintCardsToUser(randomSender1, BigInt.fromString("2"), curioCardAddress1);
     // Assert the state of the store
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");

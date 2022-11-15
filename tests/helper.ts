@@ -1,7 +1,8 @@
 import { Address, ethereum, BigInt } from "@graphprotocol/graph-ts";
-import { createMockedFunction, newMockEvent } from "matchstick-as";
+import { createMockedFunction, newMockCall, newMockEvent } from "matchstick-as";
 import { CardType } from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
+import { TransferCall } from "../generated/templates/ERC20/ERC20";
 import { getOrCreateCardHolder, getOrCreateCardBalance } from "../src/functions";
 import { ERC20 as ERC20Entity } from "../generated/templates";
 import { ERC1155_ADDRESS } from "../src/constants";
@@ -18,11 +19,19 @@ export const randomSender2 = Address.fromString(
   "0x267e959769dfe608a578f1de63eabd18e187d8b7"
 );
 
+export const seventeenbWrapper = Address.fromString("0x04afa589e2b933f9463c5639f412b183ec062505")
+export const seventeenbCurio = Address.fromString("0xe0b5e6f32d657e0e18d4b3e801ebc76a5959e123")
+
 export const cardBalanceId =
   curioCardAddress1.toHex() + "-" + randomSender1.toHex();
   export const cardBalanceId2 =
   curioCardAddress1.toHex() + "-" + randomSender2.toHex();
 
+
+export const cardBalanceId17b =
+seventeenbCurio.toHex() + "-" + randomSender1.toHex();
+export const cardBalanceId17b2 =
+seventeenbCurio.toHex() + "-" + randomSender2.toHex();
 export function createNewERC20TransferEvent(
   from: Address,
   to: Address,
@@ -50,6 +59,23 @@ export function createNewERC20TransferEvent(
   );
 
   return transferEvent;
+}
+
+export function creatNewERC20TransferCall(from: Address, to: Address, value: string, transactionTo: Address): TransferCall {
+  let mockCall = newMockCall();
+  let toParam = new ethereum.EventParam("to", ethereum.Value.fromAddress(to));
+  let valueParam = new ethereum.EventParam("value", ethereum.Value.fromI32(2));
+
+  let callEvent = new TransferCall(
+    transactionTo,
+    from,
+    mockCall.block,
+    mockCall.transaction,
+    [toParam, valueParam],
+    []
+  )
+
+  return callEvent;
 }
 
 export function createNewERC1155OfficialTransferEvent(
@@ -132,8 +158,21 @@ export function createCard() :CardType {
   return cardType;
 }
 
-export function mintCardsToUser(to: Address, amount: BigInt): void {
-  let cardType = CardType.load(curioCardAddress1.toHex())
+export function createCard17b() :CardType {
+  let cardType = new CardType(seventeenbCurio.toHex());
+
+  cardType.supply = BigInt.fromString("1200");
+  cardType.address = seventeenbCurio;
+  cardType.symbol = "CURIO17b";
+  cardType.description = "CurioCard17b";
+  cardType.name = "Curio17b";
+  cardType.ipfsHash = "SomeHash";
+  cardType.save();
+  return cardType;
+}
+
+export function mintCardsToUser(to: Address, amount: BigInt, cardAddress: Address): void {
+  let cardType = CardType.load(cardAddress.toHex())
   if(cardType != null) {
     let user_recevier = getOrCreateCardHolder(to);
     let user_recevier_cardBalance = getOrCreateCardBalance(
@@ -153,8 +192,8 @@ export function mintCardsToUser(to: Address, amount: BigInt): void {
 }
 
 
-export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
-  let cardType = CardType.load(curioCardAddress1.toHex())
+export function mintWrappedCardsToUser(to: Address, amount: BigInt, cardAddress: Address): void {
+  let cardType = CardType.load(cardAddress.toHex())
   if(cardType != null) {
 
   let user_recevier = getOrCreateCardHolder(to);
@@ -172,6 +211,7 @@ export function mintWrappedCardsToUser(to: Address, amount: BigInt): void {
   user_recevier.save();
   }
 }
+
 
 
 export function mintUnofficialWrappedCardsToUser(to: Address, amount: BigInt): void {

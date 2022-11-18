@@ -5,7 +5,7 @@ import { ERC20 } from "../generated/templates";
 
 
 export function handleCreateCard(call: CreateCardCall): void {
-  if (
+  if ( //0x39786ae114cb7bca7ac103cb10aab4054c0b144e
     Address.fromString("0x39786ae114cb7bca7ac103cb10aab4054c0b144e") ==
     call.outputs.value0
   ) {

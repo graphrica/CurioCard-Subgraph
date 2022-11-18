@@ -11,7 +11,7 @@ type CardType @entity {
 
 
 type CardBalance @entity {
-    id: ID!
+    id: ID! # CardType.ID - CardHolder.ID 
     type: CardType!
     unwrapped: BigInt!
     wrappedUnofficial: BigInt!

@@ -133,8 +133,8 @@ dataSources:
           file: ./abis/ERC1155.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingleUnofficial
-      file: ./src/17bwrapper-mapping.ts
+          handler: handleTransferSingle
+      file: ./src/17bWrapper-mapping.ts
 templates:
   - kind: ethereum/contract
     name: ERC20

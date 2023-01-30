@@ -12,6 +12,7 @@ import { ERC1155Unofficial_ADDRESS, ERC1155_ADDRESS } from "../src/constants";
 import {
   cardBalanceId,
   cardBalanceId17b,
+  cardBalanceId17b2,
   cardBalanceId2,
   createCard,
   createCard17b,
@@ -36,7 +37,7 @@ describe("ERC20 Transfer Event Tests", () => {
   describe("Non-state changing", ()=> {
   
     test("ERC20 - Wrap Event Official ERC1155 (IGNORED)", () => {
-  
+    
 
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
@@ -46,12 +47,12 @@ describe("ERC20 Transfer Event Tests", () => {
         ERC1155_ADDRESS,
         "2"
       );
-  
+        
       // Call mappings
-      handleTransfer(transfer);
+      handleOfferPlaced(transfer);
   
       // Assert the state of the store
-      assert.fieldEquals("CardBalance", cardBalanceId, "wrappedOfficial", "0");
+      assert.fieldEquals("Account", account, "wrappedOfficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
@@ -89,7 +90,7 @@ describe("ERC20 Transfer Event Tests", () => {
         randomSender1,
         "2"
       );
-  
+      
       // Call mappings
       handleTransfer(transfer);
   
@@ -198,6 +199,31 @@ describe("State changing", () => {
     assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedOfficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedUnofficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "2");
+    // Clear the store before the next test (optional)
+  });
+
+  test("ERC20 Transfer 17b Direct Transfer - Transfer Call", () => {
+    createCard17b(); 
+    mintCardsToUser(randomSender1, BigInt.fromString("2"), seventeenbCurio);
+    assert.fieldEquals("CardBalance", cardBalanceId17b, "wrappedOfficial", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId17b, "wrappedUnofficial", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId17b, "unwrapped", "2");
+    var transfer = creatNewERC20TransferCall(
+      randomSender1,
+      randomSender2,
+      "2",
+      seventeenbCurio
+    );
+
+    // Call mappings
+    handle17bDirectTransfer(transfer);
+
+    // Assert the state of the store
+    assert.entityCount("CardBalance", cardBalanceId17b);
+    assert.fieldEquals("Account", bidder1.toHexString(), "id" , bidder1.toHexString());
+    assert.fieldEquals("Offer", originContract, "wrappedUnofficial", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId17b2, "unwrapped", "2");
+
     // Clear the store before the next test (optional)
   });
   afterEach(() => {

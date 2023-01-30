@@ -38,8 +38,8 @@ export function createNewERC20TransferEvent(
   value: string
 ): Transfer {
   let mockEvent = newMockEvent();
-  let fromParam = new ethereum.EventParam(
-    "from",
+  let originContractParam = new ethereum.EventParam(
+    "orginContractParam",
     ethereum.Value.fromAddress(from)
   );
   let toParam = new ethereum.EventParam("to", ethereum.Value.fromAddress(to));
@@ -47,9 +47,9 @@ export function createNewERC20TransferEvent(
   let valueParam = new ethereum.EventParam("value", ethereum.Value.fromI32(2));
 
   // Initialise event (this can be generalised into a separate function)
-  let transferEvent = new Transfer(
-    curioCardAddress1,
-    mockEvent.logIndex,
+  let transferEvent = new OfferPlaced(
+    curioCardAddress1, 
+    mockEvent.logIndex, 
     mockEvent.transactionLogIndex,
     mockEvent.logType,
     mockEvent.block,

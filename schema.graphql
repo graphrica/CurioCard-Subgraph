@@ -26,3 +26,9 @@ type CardHolder @entity {
   "Holdings is a map between Card ID (1...30) and Balance (number of cards)."
   holdings: [CardBalance!] @derivedFrom(field: "user")
 }
+
+
+type Global @entity {
+  id: ID!
+  totalCards: BigInt!
+}

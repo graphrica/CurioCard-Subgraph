@@ -1,10 +1,22 @@
-import { Address, log } from "@graphprotocol/graph-ts";
+import { Address, log, BigInt } from "@graphprotocol/graph-ts";
 import { CreateCardCall } from "../generated/CardFactory/CardFactory";
-import { CardType } from "../generated/schema";
+import { CardType, Global } from "../generated/schema";
 import { ERC20 } from "../generated/templates";
 
 
 export function handleCreateCard(call: CreateCardCall): void {
+  let global = Global.load("1");
+  if(!global){
+    global = new Global("1");
+    global.totalCards = BigInt.fromI32(0);
+    global.save();
+  }
+
+  if(global.totalCards >= BigInt.fromI32(31)) {
+    log.info("FAKE CURIO CARD", []);
+    return;
+  }
+
   if ( //0x39786ae114cb7bca7ac103cb10aab4054c0b144e
     Address.fromString("0x39786ae114cb7bca7ac103cb10aab4054c0b144e") ==
     call.outputs.value0
@@ -28,6 +40,8 @@ export function handleCreateCard(call: CreateCardCall): void {
     cardType.save();
 
     ERC20.create(call.outputs.value0);
+    global.totalCards = global.totalCards.plus(BigInt.fromI32(1));
+    global.save();
   }
 }
 // ERC1155 Official Events

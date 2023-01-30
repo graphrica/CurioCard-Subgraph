@@ -3,7 +3,7 @@ import {
   Transfer,
   TransferCall,
 } from "../generated/templates/ERC20/ERC20";
-import { CardType } from "../generated/schema";
+import { CardType, Global } from "../generated/schema";
 import {
   checkIfSentToSelf,
   clearEmptyCardBalance,
@@ -200,6 +200,12 @@ export function handleDirectTransfer(call: TransferCall): void {
       cardType.name = "Curio17b";
       cardType.ipfsHash = "";
       cardType.save();
+      
+      let global = Global.load("1");
+      if(global){
+        global.totalCards = global.totalCards.plus(BigInt.fromI32(1));
+        global.save();
+      }
 
       log.warning("CARDTYPE DOES NOT EXIST - 17b CREATED", []);
     }

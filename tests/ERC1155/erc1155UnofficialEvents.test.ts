@@ -29,6 +29,7 @@ import {
   mintUnofficialWrappedCardsToUser,
 } from "../helper";
 import { handleTransfer } from "../../src/erc20-mapping";
+import { CardBalance } from "../../generated/schema";
 
 describe("ERC1155 UNOFFICIAL TESTS", () => {
   beforeEach(() => {
@@ -126,6 +127,13 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
     // Call mappings
     handleTransferSingleUnofficial(transfer);
 
+    var cardBalance = CardBalance.load(cardBalanceId2);
+    if(cardBalance != null) {
+      assert.stringEquals(cardBalance.type, curioCardAddress1.toHexString());
+      assert.stringEquals(cardBalance.user, randomSender2.toHexString());
+    }
+
+   
     // Assert the state of the store
     assert.notInStore("CardBalance", cardBalanceId);
     assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedUnofficial", "2");

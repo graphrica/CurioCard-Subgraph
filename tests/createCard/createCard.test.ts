@@ -4,6 +4,7 @@ import {
   assert,
   describe,
   beforeEach,
+  dataSourceMock,
   
 } from "matchstick-as/assembly/index";
 import { handleTransfer } from "../../src/erc20-mapping";
@@ -29,7 +30,7 @@ import {
 import { afterEach } from "matchstick-as";
 import { createCreateCardCall } from "./createCard.test.utils";
 import { handleCreateCard } from "../../src/mapping"
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, dataSource } from "@graphprotocol/graph-ts";
 describe("Create Card", () => {
   test("Create Curio1", () => {
     //Arrange

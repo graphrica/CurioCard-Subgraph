@@ -49,10 +49,10 @@ describe("ERC20 Transfer Event Tests", () => {
       );
         
       // Call mappings
-      handleOfferPlaced(transfer);
+      handleTransfer(transfer);
   
       // Assert the state of the store
-      assert.fieldEquals("Account", account, "wrappedOfficial", "0");
+            
       assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
       assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
   
@@ -219,9 +219,7 @@ describe("State changing", () => {
     handle17bDirectTransfer(transfer);
 
     // Assert the state of the store
-    assert.entityCount("CardBalance", cardBalanceId17b);
-    assert.fieldEquals("Account", bidder1.toHexString(), "id" , bidder1.toHexString());
-    assert.fieldEquals("Offer", originContract, "wrappedUnofficial", "0");
+    assert.entityCount("CardBalance", 2);
     assert.fieldEquals("CardBalance", cardBalanceId17b2, "unwrapped", "2");
 
     // Clear the store before the next test (optional)

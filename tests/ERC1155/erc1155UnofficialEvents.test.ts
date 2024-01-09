@@ -35,12 +35,15 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
   beforeEach(() => {
     createCard(); 
   })
-  test("ERC1155 Unofficial - Wrap Event (IGNORED) ", () => {
 
+  test("ERC1155 Unofficial - Wrap Event (IGNORED) ", () => {
+    // Arrange of the Test
     mintCardsToUser(randomSender1, BigInt.fromString("2"), curioCardAddress1);
     // Assert the state of the store
     assert.fieldEquals("CardBalance", cardBalanceId, "wrappedUnofficial", "0");
     assert.fieldEquals("CardBalance", cardBalanceId, "unwrapped", "2");
+
+    // Arrange
     var wrap = createNewERC1155UnofficialTransferEvent(
       ADDRESS_ZERO,
       randomSender1,
@@ -50,6 +53,8 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
     );
 
     // Call mappings
+
+    //Act 
     handleTransferSingleUnofficial(wrap);
 
     // Assert the state of the store
@@ -138,6 +143,7 @@ describe("ERC1155 UNOFFICIAL TESTS", () => {
     assert.notInStore("CardBalance", cardBalanceId);
     assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedUnofficial", "2");
     assert.fieldEquals("CardBalance", cardBalanceId2, "unwrapped", "0");
+    assert.fieldEquals("CardBalance", cardBalanceId2, "wrappedOfficial", "0");
 
     // Clear the store before the next test (optional)
    

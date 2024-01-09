@@ -159,6 +159,11 @@ export function handleTransfer(event: Transfer): void {
 export function handleDirectTransfer(call: TransferCall): void {
   if (!checkIfSentToSelf(call.inputs._to, call.from, call.from) && call.inputs._value > BigInt.fromI32(0)) {
   var cardType = CardType.load(call.to.toHex());
+  var txTo = call.transaction.to;
+  var txToCheck = ADDRESS_ZERO;
+  if(txTo){
+    txToCheck = txTo;
+  }
   if (cardType != null) {
     log.info(
       "START DIRECT TRANSFER - txfrom: {}, from: {}, to: {}, inputTo: {}",
@@ -188,7 +193,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       ]);
     } else if (
       call.to == ERC1155_ADDRESS ||
-      call.transaction.to == ERC1155_ADDRESS
+      txToCheck == ERC1155_ADDRESS
     ) {
       log.info("IGNORE OFFICIAL WRAP - txfrom: {}, from: {}, to: {}", [
         call.transaction.from.toHexString(),
@@ -245,7 +250,7 @@ export function handleDirectTransfer(call: TransferCall): void {
       );
       let user_recevier = getOrCreateCardHolder(call.inputs._to);
       if(call.to == PERMAWRAPPER ||
-        call.transaction.to == PERMAWRAPPER){
+        txToCheck == PERMAWRAPPER){
           user_recevier  = getOrCreateCardHolder(ADDRESS_ZERO);
         }
       // GET USER RECEIVER and USER RECEIVER CARD Balance
